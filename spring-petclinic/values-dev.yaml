@@ -1,3 +1,2 @@
 namespace: dev
-image:
-  tag: latest
+tag: latest

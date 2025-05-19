@@ -1,3 +1,2 @@
 namespace: custom
-image:
-  tag: latest
+tag: latest

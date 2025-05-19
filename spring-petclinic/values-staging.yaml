@@ -1,3 +1,2 @@
 namespace: staging
-image:
-  tag: latest
+tag: latest
