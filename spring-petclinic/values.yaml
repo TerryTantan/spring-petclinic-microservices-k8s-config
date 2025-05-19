@@ -1,5 +1,6 @@
 profile: k8s
-imageRepository: terrytantan
+image:
+  repository: terrytantan
 servers:
   - configServer:
       replicas: 1
@@ -10,7 +11,6 @@ servers:
       port: 8888
       image:
         name: spring-petclinic-config-server
-        tag: latest
   - discoveryServer:  
       replicas: 1
       appName: discovery-server
@@ -20,7 +20,6 @@ servers:
       port: 8761
       image:
         name: spring-petclinic-discovery-server
-        tag: latest
   - openzipkin:
       replicas: 1
       appName: tracing-server
@@ -30,7 +29,6 @@ servers:
       port: 9411
       image:
         name: openzipkin/zipkin
-        tag: latest
   - adminServer:
       replicas: 1
       appName: admin-server
@@ -40,7 +38,6 @@ servers:
       port: 9090
       image:
         name: spring-petclinic-admin-server
-        tag: latest
   - apiGateway:
       replicas: 1
       appName: api-gateway
@@ -50,7 +47,6 @@ servers:
       port: 8080
       image:
         name: spring-petclinic-api-gateway
-        tag: latest
   - customerService:
       replicas: 1
       appName: customers-service
@@ -60,7 +56,6 @@ servers:
       port: 8081
       image:
         name: spring-petclinic-customers-service
-        tag: latest
   - genaiService:
       replicas: 1
       appName: genai-service
@@ -70,7 +65,6 @@ servers:
       port: 8084
       image:
         name: spring-petclinic-genai-service
-        tag: latest
   - vetsService:
       replicas: 1
       appName: vets-service
@@ -80,7 +74,6 @@ servers:
       port: 8083
       image:
         name: spring-petclinic-vets-service
-        tag: latest
   - visitsService:
       replicas: 1
       appName: visits-service
@@ -90,7 +83,6 @@ servers:
       port: 8082
       image:
         name: spring-petclinic-visits-service
-        tag: latest
 ingress:
   name: spring-petclinic-ingress
   annotations:
