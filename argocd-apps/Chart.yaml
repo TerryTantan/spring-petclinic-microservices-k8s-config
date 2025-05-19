@@ -1,5 +1,5 @@
 apiVersion: v2
-name: helm-algocd-application
+name: helm-argocd-application
 description: A Helm chart for Kubernetes to deploy the ArgoCD application
 
 type: application
