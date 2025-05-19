@@ -39,7 +39,7 @@ servers:
       image:
         name: spring-petclinic-admin-server
   - apiGateway:
-      replicas: 2
+      replicas: 1
       appName: api-gateway
       deploymentName: api-gateway-deployment
       serviceName: api-gateway
