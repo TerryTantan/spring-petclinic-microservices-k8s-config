@@ -19,3 +19,7 @@ helm install argocd argo/argo-cd \
   --create-namespace \
   --set server.service.type=LoadBalancer
 echo "ArgoCD setup complete."
+
+# ArgoCD application setup
+echo "Setting up ArgoCD applications..."
+helm install argocd-apps ./argocd-apps --namespace argocd 
