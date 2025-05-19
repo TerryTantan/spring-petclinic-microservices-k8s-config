@@ -1,0 +1,6 @@
+{{- range $i, $server := .Values.servers }}
+  {{- range $key, $configInfo := $server }}
+{{- include "spring-petclinic.deployment" (dict "root" $configInfo "namespace" $.Values.namespace "imageRepository" $.Values.imageRepository "profile" $.Values.profile)}}
+---
+{{- end }}
+{{- end }}
