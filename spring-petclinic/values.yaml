@@ -48,7 +48,7 @@ servers:
       image:
         name: spring-petclinic-api-gateway
   - customerService:
-      replicas: 2
+      replicas: 1
       appName: customers-service
       deploymentName: customers-service-deployment
       serviceName: customers-service
