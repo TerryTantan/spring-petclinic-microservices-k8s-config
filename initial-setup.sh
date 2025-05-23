@@ -22,4 +22,9 @@ echo "ArgoCD setup complete."
 
 # ArgoCD application setup
 echo "Setting up ArgoCD applications..."
+helm uninstall argocd-apps --namespace argocd 
 helm install argocd-apps ./argocd-apps --namespace argocd 
+echo "ArgoCD applications setup complete."
+echo "Initial credentials for ArgoCD:"
+echo "- Username: admin"
+echo "- Password: $(kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 --decode)"
