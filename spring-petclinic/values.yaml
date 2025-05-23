@@ -120,10 +120,3 @@ ingress:
         service:
           name: tracing-server
           port: 9411
-
-controller:
-  service:
-    annotations:
-      service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /healthz
-    externalTrafficPolicy: Local
-

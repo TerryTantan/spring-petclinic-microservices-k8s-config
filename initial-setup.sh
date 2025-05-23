@@ -5,15 +5,19 @@
 echo "Setting up Nginx Ingress Controller..."
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
+helm uninstall ingress-nginx --namespace ingress-nginx 
 helm install ingress-nginx ingress-nginx/ingress-nginx \
   --namespace ingress-nginx \
-  --create-namespace
+  --create-namespace \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
+  --set controller.service.externalTrafficPolicy=Local
 echo "Nginx Ingress Controller setup complete."
 
 # ArgoCD Setup Script
 echo "Setting up ArgoCD..."
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
+helm uninstall argocd --namespace argocd
 helm install argocd argo/argo-cd \
   --namespace argocd \
   --create-namespace \
