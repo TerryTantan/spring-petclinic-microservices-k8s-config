@@ -3,7 +3,7 @@ image:
   repository: terrytantan
 servers:
   - configServer:
-      replicas: 1
+      replicas: 2
       appName: config-server
       deploymentName: config-server-deployment
       serviceName: config-server
