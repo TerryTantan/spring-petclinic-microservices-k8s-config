@@ -22,7 +22,7 @@ echo >> ./argocd-apps/values.yaml
 echo -n "  -" $user >> ./argocd-apps/values.yaml
 
 # Make a folder
-mkdir -p ${user}/templates
+mkdir -p users/${user}/templates
 cp ./spring-petclinic/Chart.yaml ${user}/Chart.yaml
 touch ${user}/values.yaml
 
