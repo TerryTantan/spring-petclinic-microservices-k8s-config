@@ -8,4 +8,5 @@ application:
     - staging
 
 users:
-  - dev1
+  - khai
+  - thang

@@ -27,7 +27,6 @@ cp ./spring-petclinic/Chart.yaml users/${user}/Chart.yaml
 touch users/${user}/values.yaml
 touch users/${user}/values-${user}.yaml
 
-
 # Push the changes to the git repository
 git add .
 git commit -m "Added user $user with initial templates"
