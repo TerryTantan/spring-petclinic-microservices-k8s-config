@@ -8,5 +8,4 @@ application:
     - staging
 
 users:
-  - khai
   - thang
