@@ -12,7 +12,7 @@ servers:
       image:
         name: spring-petclinic-config-server
   - discoveryServer:  
-      replicas: 1
+      replicas: 2
       appName: discovery-server
       deploymentName: discovery-server-deployment
       serviceName: discovery-server
