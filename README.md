@@ -7,9 +7,12 @@ Prerequisite:
 - Using a Linux distro.
 - Already installed helm and connected to a K8S cluster.
 
-Installation:
+First installation:
 ```bash
 ./scripts/initial-setup.sh
 ```
+Deployment:
+```bash
 chmod u+x ./scripts/user-deploy.sh
 ./scripts/user-deploy.sh namespace:john config-server:v1.0 api-gateway:v2.0 customers-service:v1.5
+```

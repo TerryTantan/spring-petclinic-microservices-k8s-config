@@ -92,4 +92,9 @@ cp -r spring-petclinic/templates "$user_dir/"
 cp spring-petclinic/Chart.yaml "$user_dir/"
 cp spring-petclinic/values.yaml "$user_dir/"
 
+# Commit
+git add .
+git commit -m "Added deployment files for user $namespace with specified tags"
+git push origin main
+
 echo "Deployment files created successfully in $user_dir"
