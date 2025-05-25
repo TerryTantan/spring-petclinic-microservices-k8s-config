@@ -1,7 +1,7 @@
 profile: k8s
 servers:
   - configServer:
-      replicas: 2
+      replicas: 1
       appName: config-server
       deploymentName: config-server-deployment
       serviceName: config-server
@@ -10,7 +10,7 @@ servers:
       image:
         name: spring-petclinic-config-server
   - discoveryServer:  
-      replicas: 2
+      replicas: 1
       appName: discovery-server
       deploymentName: discovery-server-deployment
       serviceName: discovery-server
