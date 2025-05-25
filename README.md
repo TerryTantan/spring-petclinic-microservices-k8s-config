@@ -11,6 +11,7 @@ First installation:
 ```bash
 ./scripts/initial-setup.sh
 ```
+
 Deployment:
 ```bash
 chmod u+x ./scripts/user-deploy.sh
