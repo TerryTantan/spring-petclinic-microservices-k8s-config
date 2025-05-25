@@ -1,0 +1,13 @@
+namespace: dev1
+image:
+  repository: terrytantan
+tags:
+  config-server: latest
+  discovery-server: latest
+  tracing-server: latest
+  admin-server: latest
+  api-gateway: latest
+  customers-service: latest
+  genai-service: latest
+  vets-service: latest
+  visits-service: latest
