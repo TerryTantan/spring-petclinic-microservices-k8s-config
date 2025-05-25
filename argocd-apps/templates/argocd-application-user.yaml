@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: {{ $.Values.application.name }}-user-{{ $user }}
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
