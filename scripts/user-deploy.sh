@@ -66,13 +66,8 @@ if [ -z "$namespace" ]; then
     exit 1
 fi
 
-# Create user directory if it doesn't exist
-user_dir="users/$namespace"
-mkdir -p "$user_dir"
-
-# Create values-{user_name}.yaml
-cat > "$user_dir/values-$namespace.yaml" << EOF
-namespace: $namespace
+# Create values file content
+values_content="namespace: $namespace
 image:
   repository: terrytantan
 tags:
@@ -84,12 +79,56 @@ tags:
   customers-service: $customers_service_tag
   genai-service: $genai_service_tag
   vets-service: $vets_service_tag
-  visits-service: $visits_service_tag
-EOF
+  visits-service: $visits_service_tag"
 
-# Copy templates, Chart.yaml, and values.yaml
-cp -r spring-petclinic/templates "$user_dir/"
-cp spring-petclinic/Chart.yaml "$user_dir/"
-cp spring-petclinic/values.yaml "$user_dir/"
+# Handle based on namespace
+if [ "$namespace" = "dev" ] || [ "$namespace" = "staging" ]; then
+    # For dev and staging, only create values file in spring-petclinic directory
+    echo "$values_content" > "./spring-petclinic/values-$namespace.yaml"
+    echo "Created values-$namespace.yaml in spring-petclinic directory"
+    
+    # Create commit message with service tags for dev/staging
+    commit_msg="Update values-$namespace.yaml with tags:"
+    for arg in "$@"; do
+        key=$(echo $arg | cut -d':' -f1)
+        value=$(echo $arg | cut -d':' -f2)
+        if [ "$key" != "namespace" ]; then
+            commit_msg="$commit_msg\n- $key: $value"
+        fi
+    done
+else
+    # For other users, create full directory structure
+    user_dir="users/$namespace"
+    mkdir -p "$user_dir"
+    
+    # Create values-{user_name}.yaml
+    echo "$values_content" > "$user_dir/values-$namespace.yaml"
+    
+    # Copy templates, Chart.yaml, and values.yaml
+    cp -r spring-petclinic/templates "$user_dir/"
+    cp spring-petclinic/Chart.yaml "$user_dir/"
+    cp spring-petclinic/values.yaml "$user_dir/"
+    
+    echo "Deployment files created successfully in $user_dir"
+    
+    # Create commit message for new user setup
+    commit_msg="Setup deployment for user $namespace with tags:"
+    for arg in "$@"; do
+        key=$(echo $arg | cut -d':' -f1)
+        value=$(echo $arg | cut -d':' -f2)
+        if [ "$key" != "namespace" ]; then
+            commit_msg="$commit_msg\n- $key: $value"
+        fi
+    done
+fi
 
-echo "Deployment files created successfully in $user_dir"
+# Add changes to git
+git add .
+
+# Commit with detailed message
+echo -e "$commit_msg" | git commit -F -
+
+# Push changes
+git push origin main
+
+echo "Changes have been committed and pushed to repository"

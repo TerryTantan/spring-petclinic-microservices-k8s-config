@@ -12,7 +12,14 @@ Installation:
 ./scripts/initial-setup.sh
 ```
 
-```
+user-deploy.sh
+```bash
 chmod u+x ./scripts/user-deploy.sh
 ./scripts/user-deploy.sh namespace:john config-server:v1.0 api-gateway:v2.0 customers-service:v1.5
+```
+
+user-cleanup.sh
+```bash
+chmod u+x scripts/user-cleanup.sh
+./scripts/user-cleanup.sh john
 ```
