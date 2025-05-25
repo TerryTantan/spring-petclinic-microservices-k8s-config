@@ -2,12 +2,12 @@ namespace: custom
 image:
   repository: terrytantan
 tags:
-  config-server: v1.0.0
-  discovery-server: v1.0.0
+  config-server: latest
+  discovery-server: latest
   tracing-server: latest
-  admin-server: v1.0.0
-  api-gateway: v1.0.0
-  customers-service: v1.0.0
-  genai-service: v1.0.0
-  vets-service: v1.0.0
-  visits-service: v1.0.0
+  admin-server: latest
+  api-gateway: latest
+  customers-service: latest
+  genai-service: latest
+  vets-service: latest
+  visits-service: latest
