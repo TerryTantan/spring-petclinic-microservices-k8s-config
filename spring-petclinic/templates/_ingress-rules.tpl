@@ -2,7 +2,7 @@
 {{- if or (eq .namespace "prod") (eq .namespace "production") -}}
 - host: {{ .root.host }}
 {{- else -}}
-- host: {{ if .prefix }}{{ .prefix }}.{{ end }}{{ required "A namespace must be provided" .namespace }}.{{ .root.host }}
+- host: {{ required "A namespace must be provided" .namespace }}.{{ if .prefix }}{{ .prefix }}.{{ end }}{{ .root.host }}
 {{- end }}
   http:
     paths:
