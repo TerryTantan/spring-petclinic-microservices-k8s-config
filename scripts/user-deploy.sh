@@ -67,7 +67,7 @@ if [ -z "$namespace" ]; then
 fi
 
 # Create user directory if it doesn't exist
-user_dir="user/$namespace"
+user_dir="users/$namespace"
 mkdir -p "$user_dir"
 
 # Create values-{user_name}.yaml

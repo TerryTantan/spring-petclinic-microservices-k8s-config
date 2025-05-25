@@ -11,5 +11,5 @@ Installation:
 ```bash
 ./scripts/initial-setup.sh
 ```
-chmod u+x scripts/user-deploy.sh
-./user-deploy.sh namespace:john config-server:v1.0 api-gateway:v2.0 customers-service:v1.5
+chmod u+x ./scripts/user-deploy.sh
+./scripts/user-deploy.sh namespace:john config-server:v1.0 api-gateway:v2.0 customers-service:v1.5
