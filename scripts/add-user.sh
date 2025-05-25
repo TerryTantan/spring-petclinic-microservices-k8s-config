@@ -22,9 +22,7 @@ echo >> ./argocd-apps/values.yaml
 echo -n "  -" $user >> ./argocd-apps/values.yaml
 
 # Make a folder
-mkdir -p users/${user}/templates
-cp ./spring-petclinic/Chart.yaml ${user}/Chart.yaml
-touch ${user}/values.yaml
+mkdir -p users/${user}/
 
 # Push the changes to the git repository
 git add .
