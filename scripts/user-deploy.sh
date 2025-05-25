@@ -17,6 +17,7 @@ customers_service_tag="latest"
 genai_service_tag="latest"
 vets_service_tag="latest"
 visits_service_tag="latest"
+ingress_prefix=""
 
 # Parse arguments
 for arg in "$@"; do
@@ -26,6 +27,7 @@ for arg in "$@"; do
     case $key in
         "namespace")
             namespace=$value
+            ingress_prefix=$value
             ;;
         "config-server")
             config_server_tag=$value
@@ -79,7 +81,8 @@ tags:
   customers-service: $customers_service_tag
   genai-service: $genai_service_tag
   vets-service: $vets_service_tag
-  visits-service: $visits_service_tag"
+  visits-service: $visits_service_tag
+ingressPrefix: $ingress_prefix"
 
 # Handle based on namespace
 if [ "$namespace" = "dev" ] || [ "$namespace" = "staging" ]; then

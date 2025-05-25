@@ -11,6 +11,6 @@ spec:
   rules:
 {{- range $i, $server := .Values.ingress.rules }}
   {{- range $key, $configInfo := $server }}
-{{ include "spring-petclinic.ingress-rule" (dict "root" $configInfo "namespace" $.Values.namespace) | indent 4}}
+{{ include "spring-petclinic.ingress-rule" (dict "root" $configInfo "prefix" $.Values.ingressPrefix "namespace" $.Values.namespace) | indent 4}}
   {{- end }}
 {{- end }}
