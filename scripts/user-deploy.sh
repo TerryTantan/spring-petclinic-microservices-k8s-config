@@ -17,7 +17,7 @@ customers_service_tag="latest"
 genai_service_tag="latest"
 vets_service_tag="latest"
 visits_service_tag="latest"
-ingress_prefix=""
+ingress_prefix="users"
 
 # Parse arguments
 for arg in "$@"; do
@@ -27,7 +27,6 @@ for arg in "$@"; do
     case $key in
         "namespace")
             namespace=$value
-            ingress_prefix=$value
             ;;
         "config-server")
             config_server_tag=$value
