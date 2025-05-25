@@ -26,5 +26,10 @@ mkdir -p ${user}/templates
 cp ./spring-petclinic/Chart.yaml ${user}/Chart.yaml
 touch ${user}/values.yaml
 
+# Push the changes to the git repository
+git add .
+git commit -m "Added user $user with initial templates"
+git push origin main
+
 # Helm upgrade the ArgoCD applications
 helm upgrade argocd-apps ./argocd-apps --namespace argocd
