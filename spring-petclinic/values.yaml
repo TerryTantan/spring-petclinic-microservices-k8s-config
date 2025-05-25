@@ -1,6 +1,4 @@
 profile: k8s
-image:
-  repository: terrytantan
 servers:
   - configServer:
       replicas: 2

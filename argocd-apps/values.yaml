@@ -4,6 +4,8 @@ application:
     url: https://github.com/TerryTantan/spring-petclinic-microservices-k8s-config.git
     path: spring-petclinic/
   namespaces:
-    - custom
     - dev
     - staging
+
+users:
+  - dev123
