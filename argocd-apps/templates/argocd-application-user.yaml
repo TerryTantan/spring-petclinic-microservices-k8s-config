@@ -10,6 +10,9 @@ spec:
     repoURL: {{ $.Values.application.repo.url }}
     targetRevision: HEAD
     path: users/{{ $user }}/
+    helm:
+      valueFiles:
+        - values-{{ $user }}.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ $user }}
