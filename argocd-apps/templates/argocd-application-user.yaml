@@ -22,7 +22,9 @@ spec:
     automated:
       prune: true
       selfHeal: true
+      allowEmpty: true
     syncOptions:
       - CreateNamespace=true
+      - PruneLast=true
 ---    
 {{- end }}
