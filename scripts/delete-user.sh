@@ -27,7 +27,13 @@ awk -v user="$user" '
   skip && /^[^[:space:]]/ { skip=0 }
   skip && $0 ~ "^[[:space:]]*-[[:space:]]*"user"$" { next }
   { print }
-' "$file" > "$tmp_file" && mv "$tmp_file" "$file"
+' "$file" > "$tmp_file"
+
+last_char=$(tail -c 1 "$tmp_file")
+if [ "$last_char" = "" ]; then
+  truncate -s -1 "$tmp_file"
+fi
+mv "$tmp_file" "$file"
 
 # Remove user's directory
 rm -rf "users/$user"
