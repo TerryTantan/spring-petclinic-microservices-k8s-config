@@ -9,5 +9,5 @@ Prerequisite:
 
 Installation:
 ```bash
-./initial-setup.sh
+./scripts/initial-setup.sh
 ```

@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: {{ $.Values.application.repo.url }}
     targetRevision: HEAD
-    path: {{ $user }}/
+    path: users/{{ $user }}/
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ $user }}

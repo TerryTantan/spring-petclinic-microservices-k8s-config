@@ -8,6 +8,4 @@ application:
     - staging
 
 users:
-  - dev123
-  - dev1234
   - dev12345
