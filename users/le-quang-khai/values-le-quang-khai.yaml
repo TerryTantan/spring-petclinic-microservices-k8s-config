@@ -2,11 +2,11 @@ namespace: le-quang-khai
 image:
   repository: terrytantan
 tags:
-  config-server: 6bd47cd785d2e8b5f1b16703667d2ba8a6c693fc
+  config-server: 
   discovery-server: 6bd47cd785d2e8b5f1b16703667d2ba8a6c693fc
   tracing-server: latest
   admin-server: 6bd47cd785d2e8b5f1b16703667d2ba8a6c693fc
-  api-gateway: null
+  api-gateway: 6bd47cd785d2e8b5f1b16703667d2ba8a6c693fc
   customers-service: 6bd47cd785d2e8b5f1b16703667d2ba8a6c693fc
   genai-service: 6bd47cd785d2e8b5f1b16703667d2ba8a6c693fc
   vets-service: 6bd47cd785d2e8b5f1b16703667d2ba8a6c693fc
