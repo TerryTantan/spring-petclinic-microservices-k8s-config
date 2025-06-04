@@ -3,6 +3,8 @@ kind: service
 metadata:
   name: prometheus
   namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: prometheus
 spec:
   type: ClusterIP
   ports:
