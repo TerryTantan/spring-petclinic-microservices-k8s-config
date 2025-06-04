@@ -123,4 +123,4 @@ ingress:
         path: /
         service:
           name: prometheus
-          port: 9091
+          port: 9090
