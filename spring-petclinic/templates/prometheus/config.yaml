@@ -59,6 +59,6 @@ data:
       - targets: ['admin-server:9090']
     
     - job_name: tracing-server
-      metrics_path: /prometheus
+      metrics_path: /actuator/prometheus
       static_configs:
       - targets: ['tracing-server:9411']
