@@ -10,8 +10,8 @@ spec:
   type: ClusterIP
   ports:
     - name: http
-      port: {{ .root.port }}
-      targetPort: {{ .root.port }}
+      port: {{ .root.port }} 
+      targetPort: {{ if .root.targetPort }}{{- .root.targetPort -}}{{ else }}{{- .root.port -}}{{ end }}
   selector:
     app: {{ .root.appName }}
 {{- end }}

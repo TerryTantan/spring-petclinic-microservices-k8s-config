@@ -118,3 +118,9 @@ ingress:
         service:
           name: tracing-server
           port: 9411
+    - prometheus:
+        host: prometheus.spring-petclinic.com
+        path: /
+        service:
+          name: prometheus
+          port: 9091
