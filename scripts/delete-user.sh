@@ -42,6 +42,3 @@ rm -rf "users/$user"
 git add .
 git commit -m "Removed user $user and cleaned up resources"
 git push origin main
-
-# Helm upgrade the ArgoCD applications
-helm upgrade argocd-apps ./argocd-apps --namespace argocd

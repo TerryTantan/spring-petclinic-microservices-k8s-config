@@ -31,6 +31,3 @@ touch users/${user}/values-${user}.yaml
 git add .
 git commit -m "Added user $user with initial templates"
 git push origin main
-
-# Helm upgrade the ArgoCD applications
-helm upgrade argocd-apps ./argocd-apps --namespace argocd
