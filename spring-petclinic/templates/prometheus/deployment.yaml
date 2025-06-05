@@ -22,7 +22,6 @@ spec:
             - containerPort: 9090
           args:
             - --config.file=/etc/prometheus/prometheus.yml
-            - --rule.files=/etc/prometheus/rules.yml
           volumeMounts:
             - name: config-volume
               mountPath: /etc/prometheus

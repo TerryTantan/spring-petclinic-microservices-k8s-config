@@ -62,6 +62,10 @@ data:
       metrics_path: /prometheus
       static_configs:
       - targets: ['tracing-server:9411']
+
+    rule_files:
+    - rules.yaml
+    
   rules.yaml: |
     groups:
     - name: http-error-alert
