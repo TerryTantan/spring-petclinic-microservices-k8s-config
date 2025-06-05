@@ -1,6 +1,0 @@
-{{- range $i, $server := .Values.servers }}
-  {{- range $key, $configInfo := $server }}
-{{- include "spring-petclinic.service" (dict "root" $configInfo "namespace" $.Values.namespace) }}
----
-{{- end }}
-{{- end }}
