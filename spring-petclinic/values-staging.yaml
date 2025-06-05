@@ -1,6 +1,6 @@
 namespace: staging
 image:
-  repository: terrytantan
+  repository: test
 tags:
   config-server: latest
   discovery-server: latest
