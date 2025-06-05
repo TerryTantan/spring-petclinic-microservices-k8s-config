@@ -2,6 +2,7 @@ application:
   name: argocd-app
   repo:
     url: https://github.com/TerryTantan/spring-petclinic-microservices-k8s-config.git
+    applicationPath: argocd-apps/
     path: spring-petclinic/
   namespaces:
     - dev
