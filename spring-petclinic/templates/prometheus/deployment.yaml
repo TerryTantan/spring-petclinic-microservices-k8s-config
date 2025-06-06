@@ -5,6 +5,7 @@ metadata:
   namespace: {{ required "A namespace must be provided" .Values.namespace }}
   labels:
     app: prometheus
+    config-hash: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 spec:
   replicas: 1
   selector:
