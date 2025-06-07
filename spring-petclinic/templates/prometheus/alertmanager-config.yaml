@@ -12,7 +12,7 @@ data:
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 3h
-      recevier: discord-webhook
+      receiver: discord-webhook
   
     receivers:
       - name: 'discord-webhook'
