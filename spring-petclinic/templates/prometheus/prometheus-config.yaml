@@ -64,7 +64,7 @@ data:
       static_configs:
       - targets: ['tracing-server:9411']
 
-    - job_name: prometheus-alertmanager
+    - job_name: prometheus-alertmanager-test
       static_configs:
       - targets: ['alertmanager:9093']
 
