@@ -17,4 +17,4 @@ data:
     receivers:
       - name: 'discord-webhook'
         webhook_configs:
-          - url: 'http://alertmanager-discord:9094'
+          - url: 'alertmanager-discord:9094'

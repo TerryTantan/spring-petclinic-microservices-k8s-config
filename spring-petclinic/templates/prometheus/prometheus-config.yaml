@@ -64,6 +64,10 @@ data:
       static_configs:
       - targets: ['tracing-server:9411']
 
+    - job_name: prometheus-alertmanager
+      static_configs:
+      - targets: ['alertmanager:9093']
+
     rule_files:
     - rules.yaml
 
