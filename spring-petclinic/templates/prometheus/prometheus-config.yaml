@@ -84,25 +84,3 @@ data:
         annotations:
           summary: High HTTP Error Count
           description: "High number of HTTP errors detected in the last 30 seconds."
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: alertmanager-config
-  namespace: {{ required "A namespace must be provided" .Values.namespace }}
-  labels:
-    app: alertmanager
-data:
-  alertmanager.yml: |
-    route:
-      group_by: ['severity']
-      group_wait: 30s
-      group_interval: 5m
-      repeat_interval: 3h
-      recevier: discord-webhook
-  
-    receivers:
-      - name: 'discord-webhook'
-        webhook_configs:
-          - url: 'http://alertmanager-discord:9094'
