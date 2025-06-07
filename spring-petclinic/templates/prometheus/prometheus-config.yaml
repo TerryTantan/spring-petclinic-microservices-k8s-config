@@ -70,8 +70,7 @@ data:
     alerting:
       alertmanagers:
       - static_configs:
-        - targets:
-          - alertmanager:9093
+        - targets: ['alertmanager:9093']
     
   rules.yaml: |
     groups:
