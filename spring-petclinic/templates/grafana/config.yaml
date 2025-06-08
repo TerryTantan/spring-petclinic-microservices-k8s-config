@@ -1,0 +1,48 @@
+# ConfigMap for datasources
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource-config
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: grafana
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+        jsonData:
+          timeInterval: "5s"
+          tlsSkipVerify: true
+          httpMethod: POST
+        secureJsonData:
+          tlsCACert: ""
+          tlsClientCert: ""
+          tlsClientKey: ""
+
+---
+
+# ConfigMap for dashboards
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-config
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: grafana
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards
