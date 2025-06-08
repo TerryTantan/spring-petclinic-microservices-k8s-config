@@ -28,7 +28,7 @@ spec:
               mountPath: /etc/grafana/provisioning/datasources
             - name: dashboard-volume
               mountPath: /etc/grafana/provisioning/dashboards
-            - name: dashboard-spring-petclinic
+            - name: dashboard-spring-petclinic-volume
               mountPath: /var/lib/grafana/dashboards
           env:
             - name: GF_SECURITY_ADMIN_PASSWORD
