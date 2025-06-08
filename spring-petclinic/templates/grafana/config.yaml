@@ -25,7 +25,6 @@ data:
           tlsClientKey: ""
 
 ---
-
 # ConfigMap for dashboards
 apiVersion: v1
 kind: ConfigMap
@@ -46,3 +45,37 @@ data:
         editable: true
         options:
           path: /var/lib/grafana/dashboards
+
+---
+# Dashboard
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-spring-petclinic
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: grafana
+data:
+  spring-petclinic-dashboard.json: |
+    {
+      "id": null,
+      "uid": "node-exporter",
+      "title": "Node Exporter Full",
+      "tags": [ "node-exporter" ],
+      "timezone": "browser",
+      "schemaVersion": 16,
+      "version": 1,
+      "panels": [
+        {
+          "type": "graph",
+          "title": "CPU Usage",
+          "targets": [
+            {
+              "expr": "100 - (avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+              "legendFormat": "{{instance}}",
+              "refId": "A"
+            }
+          ]
+        }
+      ]
+    }
