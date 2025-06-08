@@ -84,7 +84,6 @@ spec:
     metadata:
       labels:
         app: alertmanager-discord
-      annotations:
     spec:
       containers:
         - name: alertmanager-discord
