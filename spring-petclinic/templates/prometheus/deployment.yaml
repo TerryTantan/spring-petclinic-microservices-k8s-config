@@ -5,7 +5,6 @@ metadata:
   namespace: {{ required "A namespace must be provided" .Values.namespace }}
   labels:
     app: prometheus
-    config-hash: {{ include (print $.Template.BasePath "/prometheus/prometheus-config.yaml") . | sha256sum | trunc 8 }}
 spec:
   replicas: 1
   selector:
@@ -16,7 +15,7 @@ spec:
       labels:
         app: prometheus
       annotations:
-        timestamp: {{ now | date "2006-01-02T15:04:05Z07:00" }}
+        config-hash: {{ include (print $.Template.BasePath "/prometheus/prometheus-config.yaml") . | sha256sum | trunc 8 }}
     spec:
       containers:
         - name: prometheus
@@ -41,7 +40,6 @@ metadata:
   namespace: {{ required "A namespace must be provided" .Values.namespace }}
   labels:
     app: alertmanager
-    config-hash: {{ include (print $.Template.BasePath "/prometheus/alertmanager-config.yaml") . | sha256sum | trunc 8 }}
 spec:
   replicas: 1
   selector:
@@ -51,6 +49,8 @@ spec:
     metadata:
       labels:
         app: alertmanager
+      annotations:
+        config-hash: {{ include (print $.Template.BasePath "/prometheus/alertmanager-config.yaml") . | sha256sum | trunc 8 }}
     spec:
       containers:
         - name: alertmanager
@@ -85,7 +85,6 @@ spec:
       labels:
         app: alertmanager-discord
       annotations:
-        timestamp: {{ now | date "2006-01-02T15:04:05Z07:00" }}
     spec:
       containers:
         - name: alertmanager-discord
