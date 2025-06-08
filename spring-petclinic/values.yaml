@@ -133,4 +133,4 @@ ingress:
 prometheus:
   discordWebhookUrl: https://discord.com/api/webhooks/1380969893603704892/XSyL4I7L1oVjl67DBitR9ckcmuqjQuwB25qjWE-BfnNYgiHFpSpHe5OgwrWrFqFuPH35
 grafana:
-  adminPassword: 123456789
+  adminPassword: "123456789"
