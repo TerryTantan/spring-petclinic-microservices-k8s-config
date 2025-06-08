@@ -15,7 +15,7 @@ spec:
       labels:
         app: prometheus
       annotations:
-        config-hash: {{ include (print $.Template.BasePath "/prometheus/prometheus-config.yaml") . | sha256sum | trunc 8 }}
+        config-hash: {{ include (print $.Template.BasePath "/prometheus/prometheus-config.yaml") . | sha256sum | trunc 8 | quote }}
     spec:
       containers:
         - name: prometheus
@@ -50,7 +50,7 @@ spec:
       labels:
         app: alertmanager
       annotations:
-        config-hash: {{ include (print $.Template.BasePath "/prometheus/alertmanager-config.yaml") . | sha256sum | trunc 8 }}
+        config-hash: {{ include (print $.Template.BasePath "/prometheus/alertmanager-config.yaml") . | sha256sum | trunc 8 | quote }}
     spec:
       containers:
         - name: alertmanager

@@ -15,7 +15,7 @@ spec:
       labels:
         app: grafana
       annotations:
-        config-hash: {{ include (print $.Template.BasePath "/grafana/config.yaml") . | sha256sum | trunc 8 }}
+        config-hash: {{ include (print $.Template.BasePath "/grafana/config.yaml") . | sha256sum | trunc 8 | quote }}
     spec:
       containers:
         - name: grafana
