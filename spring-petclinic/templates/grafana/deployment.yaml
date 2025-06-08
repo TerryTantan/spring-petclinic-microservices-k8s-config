@@ -28,6 +28,9 @@ spec:
               mountPath: /etc/grafana/provisioning/datasources
             - name: dashboard-volume
               mountPath: /etc/grafana/provisioning/dashboards
+          env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: {{ .Values.grafana.adminPassword | quote }}
       volumes:
         - name: datasource-volume
           configMap:
