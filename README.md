@@ -12,7 +12,20 @@ First installation:
 ./scripts/initial-setup.sh
 ```
 
-Deployment:
+User management: 
+add-user.sh
+```bash
+chmod u+x ./scripts/add-user.sh
+./scripts/add-user.sh john
+```
+
+delete-user.sh
+```bash
+chmod u+x ./scripts/delete-user.sh
+./scripts/delete-user.sh john
+```
+
+User deployment:
 user-deploy.sh
 ```bash
 chmod u+x ./scripts/user-deploy.sh
