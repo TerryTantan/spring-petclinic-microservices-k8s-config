@@ -85,5 +85,5 @@ data:
         labels:
           severity: warning
         annotations:
-          summary: High HTTP Error Count
-          description: "High number of HTTP errors detected in the last 30 seconds."
+          summary: High HTTP Error Count in {{ $.Values.namespace }}
+          description: "High number of HTTP errors detected in the last 30 seconds in {{ $.Values.namespace }}."

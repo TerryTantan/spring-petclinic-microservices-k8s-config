@@ -92,4 +92,7 @@ spec:
             - containerPort: 9094
           env:
             - name: DISCORD_WEBHOOK
-              value: {{ required "A Discord webhook URL must be provided" .Values.prometheus.discordWebhookUrl }}
+              valueFrom:
+                secretKeyRef:
+                  name: discord-webhook-secret
+                  key: webhookUrl
