@@ -18,7 +18,7 @@ echo "Setting up Kubeseal..."
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 helm uninstall sealed-secrets-controller --namespace kube-system
-helm install sealed-secrets bitnami/sealed-secrets \
+helm install sealed-secrets-controller bitnami/sealed-secrets \
   --namespace kube-system \
   --create-namespace
 echo "Kubeseal setup complete." 
