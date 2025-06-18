@@ -17,7 +17,7 @@ echo "Nginx Ingress Controller setup complete."
 echo "Setting up Kubeseal..."
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm uninstall sealed-secrets --namespace kube-system
+helm uninstall sealed-secrets-controller --namespace kube-system
 helm install sealed-secrets bitnami/sealed-secrets \
   --namespace kube-system \
   --create-namespace
