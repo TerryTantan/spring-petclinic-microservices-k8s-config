@@ -13,6 +13,16 @@ helm install ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.service.externalTrafficPolicy=Local
 echo "Nginx Ingress Controller setup complete."
 
+# Kubeseal Setup Script
+echo "Setting up Kubeseal..."
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm uninstall sealed-secrets --namespace kube-system
+helm install sealed-secrets bitnami/sealed-secrets \
+  --namespace kube-system \
+  --create-namespace
+echo "Kubeseal setup complete." 
+
 # ArgoCD Setup Script
 echo "Setting up ArgoCD..."
 helm repo add argo https://argoproj.github.io/argo-helm
