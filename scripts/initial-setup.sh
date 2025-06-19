@@ -21,7 +21,16 @@ helm uninstall sealed-secrets-controller --namespace kube-system
 helm install sealed-secrets-controller bitnami/sealed-secrets \
   --namespace kube-system \
   --create-namespace
-echo "Kubeseal setup complete." 
+echo "Kubeseal setup complete."
+
+# Prometheus Operator CRDs (PrometheusRule, ServiceMonitor, ...)
+echo "Installing Prometheus Operator CRDs (for PrometheusRule support)..."
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts || true
+helm repo update
+# idempotent install
+helm upgrade --install prom-operator-crds prometheus-community/prometheus-operator-crds \
+  --namespace kube-system --create-namespace
+echo "Prometheus Operator CRDs installed."
 
 # ArgoCD Setup Script
 echo "Setting up ArgoCD..."
