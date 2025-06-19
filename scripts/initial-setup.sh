@@ -45,15 +45,6 @@ echo "- Username: admin"
 echo "- Password: $(kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 --decode)"
 
 # Loki + Promtail Setup Script
-echo "Setting up Grafana Loki (with Promtail)..."
-helm repo add grafana https://grafana.github.io/helm-charts
-helm repo update
-# Remove existing release if present to allow re-run
+echo "Removing legacy Loki (if any) in namespace observability..."
 helm uninstall loki --namespace observability 2>/dev/null || true
-helm install loki grafana/loki-stack \
-  --namespace observability \
-  --create-namespace \
-  --set promtail.enabled=true \
-  --set grafana.enabled=false
-echo "Grafana Loki setup complete."
 

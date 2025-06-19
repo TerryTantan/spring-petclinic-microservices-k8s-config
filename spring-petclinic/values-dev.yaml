@@ -11,4 +11,4 @@ tags:
   genai-service: latest
   vets-service: latest
   visits-service: latest
-lokiNamespace: observability
+lokiNamespace: dev
