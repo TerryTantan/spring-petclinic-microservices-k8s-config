@@ -3,5 +3,5 @@ name: helm-spring-petclinic
 description: A Helm chart for Kubernetes to deploy the Spring Petclinic application
 
 type: application
-version: 0.2.0
+version: 0.3.1
 appVersion: "1.16.0"
