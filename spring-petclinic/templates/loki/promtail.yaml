@@ -48,6 +48,7 @@ spec:
             - { name: config, mountPath: /etc/promtail }
             - { name: varlog, mountPath: /var/log }
             - { name: containers, mountPath: /var/lib/docker/containers, readOnly: true }
+            - { name: varlog-containers, mountPath: /var/log/containers }
       volumes:
         - name: config
           configMap: { name: promtail-config }
@@ -55,6 +56,8 @@ spec:
           hostPath: { path: /var/log }
         - name: containers
           hostPath: { path: /var/lib/docker/containers }
+        - name: varlog-containers
+          hostPath: { path: /var/log/containers }
 ---
 apiVersion: v1
 kind: ConfigMap
