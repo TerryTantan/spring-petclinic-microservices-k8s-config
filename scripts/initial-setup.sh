@@ -37,6 +37,7 @@ echo "ArgoCD setup complete."
 # ArgoCD application setup
 echo "Setting up ArgoCD applications..."
 helm uninstall argocd-apps --namespace argocd 
+kubectl delete secret argocd-initial-admin-secret --namespace argocd --ignore-not-found
 helm install argocd-apps ./argocd-apps --namespace argocd 
 echo "ArgoCD applications setup complete."
 echo "Initial credentials for ArgoCD:"
