@@ -42,3 +42,6 @@ echo "ArgoCD applications setup complete."
 echo "Initial credentials for ArgoCD:"
 echo "- Username: admin"
 echo "- Password: $(kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 --decode)"
+
+# Loki Setup Script
+helm upgrade --install spring-petclinic ./spring-petclinic -n observability --create-namespace
