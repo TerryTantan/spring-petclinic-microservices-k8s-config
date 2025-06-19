@@ -1,3 +1,4 @@
+namespace: observability
 profile: k8s
 servers:
   - configServer:
@@ -130,6 +131,12 @@ ingress:
         service:
           name: grafana
           port: 3000
+    - loki:
+        host: loki.spring-petclinic.com
+        path: /
+        service:
+          name: loki
+          port: 3100
 prometheus:
   discordWebhookUrl: https://discord.com/api/webhooks/1380969893603704892/XSyL4I7L1oVjl67DBitR9ckcmuqjQuwB25qjWE-BfnNYgiHFpSpHe5OgwrWrFqFuPH35
 grafana:
