@@ -54,6 +54,9 @@ echo "ArgoCD applications setup complete."
 
 # ArgoCD Image Updater Setup
 echo "Setting up ArgoCD Image Updater..."
+
+ARGOCD_IP=$(kubectl -n argocd get svc argocd-server -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+
 argocd account update-password \
   --account image-updater \
   --new-password 123456789 \
@@ -68,7 +71,6 @@ argocd account update-password \
   --server "$ARGOCD_IP" \
   --insecure
 
-ARGOCD_IP=$(kubectl -n argocd get svc argocd-server -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 argocd login "$ARGOCD_IP" \
   --username image-updater \
   --password 123456789 \
