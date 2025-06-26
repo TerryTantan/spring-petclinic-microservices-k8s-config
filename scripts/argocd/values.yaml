@@ -1,0 +1,11 @@
+configs:
+  cm:
+    accounts.image-updater: login, apiKey
+
+  rbac:
+    policy.csv: |
+      p, role:image-updater, applications, get, */*, allow
+      p, role:image-updater, applications, update, */*, allow
+      p, role:image-updater, applications, list, */*, allow
+      g, image-updater, role:image-updater
+    policy.default: role:readonly
