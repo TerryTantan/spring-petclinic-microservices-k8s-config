@@ -29,8 +29,6 @@ helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 
 helm uninstall argocd --namespace argocd
-kubectl delete configmap argocd-cm -n argocd
-kubectl delete secret argocd-secret -n argocd
 kubectl delete secret argocd-initial-admin-secret -n argocd 
 
 helm install argocd argo/argo-cd \
@@ -43,9 +41,7 @@ helm install argocd argo/argo-cd \
 echo "ArgoCD setup complete."
 
 echo "Initial credentials for ArgoCD:"
-echo "- Username: admin"
 CURRENT_ADMIN_PASSWORD=$(kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 --decode)
-echo "- Password: $CURRENT_ADMIN_PASSWORD"
 
 # ArgoCD Image Updater Setup
 echo "Setting up ArgoCD Image Updater..."
@@ -83,16 +79,6 @@ argocd login "$ARGOCD_IP" \
 TOKEN=$(argocd account generate-token --account image-updater)
 
 helm uninstall argocd-image-updater --namespace argocd-image-updater
-kubectl delete clusterrole argocd-application-controller \
-  argocd-server \
-  argocd-image-updater \
-  argocd-viewer \
-  argocd-image-updater-role 
-
-kubectl delete clusterrolebinding argocd-application-controller \
-  argocd-server \
-  argocd-image-updater \
-  argocd-image-updater-binding
 
 echo "Installing ArgoCD Image Updater..."
 helm install argocd-image-updater argo/argocd-image-updater \
@@ -113,4 +99,4 @@ echo "ArgoCD applications setup complete."
 
 # Complete
 echo "Initial setup complete. Please check the logs for any errors."
-echo "You can access ArgoCD at http://$ARGOCD_IP."
+echo "You can access ArgoCD at http://$ARGOCD_IP. with username 'admin' and password '123456789'."
