@@ -43,15 +43,6 @@ echo "- Username: admin"
 CURRENT_ADMIN_PASSWORD=$(kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 --decode)
 echo "- Password: $CURRENT_ADMIN_PASSWORD"
 
-# ArgoCD Application Setup
-echo "Setting up ArgoCD applications..."
-helm uninstall argocd-apps --namespace argocd || true
-helm install argocd-apps ./argocd-apps \
-  --namespace argocd \
-  --create-namespace
-
-echo "ArgoCD applications setup complete."
-
 # ArgoCD Image Updater Setup
 echo "Setting up ArgoCD Image Updater..."
 
@@ -84,6 +75,15 @@ helm install argocd-image-updater argo/argocd-image-updater \
   --set config.argocd.serverAddress="$ARGOCD_IP" \
   --set config.argocd.token="$TOKEN"
 echo "ArgoCD Image Updater setup complete."
+
+# ArgoCD Application Setup
+echo "Setting up ArgoCD applications..."
+helm uninstall argocd-apps --namespace argocd || true
+helm install argocd-apps ./argocd-apps \
+  --namespace argocd \
+  --create-namespace
+
+echo "ArgoCD applications setup complete."
 
 # Complete
 echo "Initial setup complete. Please check the logs for any errors."
