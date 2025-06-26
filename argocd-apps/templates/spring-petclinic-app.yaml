@@ -13,7 +13,7 @@ metadata:
         {{- $full := printf "%s-%s" $name $ns }}
         {{- if not $first }},{{ end }}
         {{- $first = false }}
-        {{ $full }}={{ $repo }}/{{ $full }}
+        {{ $full }}={{ $repo }}/spring-petclinic-{{ $full }}
       {{- end }}
 
     {{- $ns := $namespace }}
