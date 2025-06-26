@@ -82,3 +82,7 @@ helm install argocd-image-updater argo/argocd-image-updater \
   --set config.argocd.serverAddress="$ARGOCD_IP" \
   --set config.argocd.token="$TOKEN"
 echo "ArgoCD Image Updater setup complete."
+
+# Complete
+echo "Initial setup complete. Please check the logs for any errors."
+echo "You can access ArgoCD at http://$ARGOCD_IP."
