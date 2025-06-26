@@ -2,13 +2,13 @@ namespace: staging
 image:
   repository: terrytantan
 tags:
-  config-server: latest
-  discovery-server: latest
-  tracing-server: latest
-  admin-server: latest
-  api-gateway: latest
-  customers-service: latest
-  genai-service: latest
-  vets-service: latest
-  visits-service: latest
+  config-server-staging: latest
+  discovery-server-staging: latest
+  tracing-server-staging: latest
+  admin-server-staging: latest
+  api-gateway-staging: latest
+  customers-service-staging: latest
+  genai-service-staging: latest
+  vets-service-staging: latest
+  visits-service-staging: latest
 lokiNamespace: staging

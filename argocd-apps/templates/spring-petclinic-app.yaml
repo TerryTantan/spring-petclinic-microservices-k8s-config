@@ -4,11 +4,30 @@ kind: Application
 metadata:
   name: {{ $.Values.application.name }}-{{ $namespace }}
   namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: >-
+      {{- $repo := $.Values.application.image.repository }}
+      {{- $ns := $namespace }}
+      {{- $first := true }}
+      {{- range $i, $name := $.Values.application.image.base }}
+        {{- $full := printf "%s-%s" $name $ns }}
+        {{- if not $first }},{{ end }}
+        {{- $first = false }}
+        {{ $full }}={{ $repo }}/{{ $full }}
+      {{- end }}
+
+    {{- $ns := $namespace }}
+    {{- range $i, $name := $.Values.application.image.base }}
+      {{- $full := printf "%s-%s" $name $ns }}
+    argocd-image-updater.argoproj.io/{{ $full }}.helm-value: tags.{{ $full }}
+    argocd-image-updater.argoproj.io/{{ $full }}.update-strategy: latest
+    {{- end }}
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd-image-updater/git-creds
 spec:
   project: default
   source:
     repoURL: {{ $.Values.application.repo.url }}
-    targetRevision: HEAD
+    targetRevision: main
     path: {{ $.Values.application.repo.path }}
     helm:
       valueFiles:

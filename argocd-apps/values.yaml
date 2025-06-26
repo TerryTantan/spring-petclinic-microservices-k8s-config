@@ -7,5 +7,16 @@ application:
   namespaces:
     - dev
     - staging
+  image:
+    repository: terrytantan
+    base:
+      - config-server
+      - discovery-server
+      - admin-server
+      - api-gateway
+      - customers-service
+      - genai-service
+      - vets-service
+      - visits-service
 
 users:

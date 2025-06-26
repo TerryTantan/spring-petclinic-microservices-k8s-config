@@ -2,13 +2,13 @@ namespace: dev
 image:
   repository: terrytantan
 tags:
-  config-server: latest
-  discovery-server: latest
-  tracing-server: latest
-  admin-server: latest
-  api-gateway: latest
-  customers-service: latest
-  genai-service: latest
-  vets-service: latest
-  visits-service: latest
+  config-server-dev: latest
+  discovery-server-dev: latest
+  tracing-server-dev: latest
+  admin-server-dev: latest
+  api-gateway-dev: latest
+  customers-service-dev: latest
+  genai-service-dev: latest
+  vets-service-dev: latest
+  visits-service-dev: latest
 lokiNamespace: dev
