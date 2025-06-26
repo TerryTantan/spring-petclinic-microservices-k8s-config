@@ -28,7 +28,11 @@ echo "Setting up ArgoCD..."
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 
-helm uninstall argocd --namespace argocd || true
+helm uninstall argocd --namespace argocd
+kubectl delete configmap argocd-cm -n argocd
+kubectl delete secret argocd-secret -n argocd
+kubectl delete secret argocd-initial-admin-secret -n argocd 
+
 helm install argocd argo/argo-cd \
   --namespace argocd \
   --create-namespace \
@@ -48,6 +52,13 @@ echo "Setting up ArgoCD Image Updater..."
 
 ARGOCD_IP=$(kubectl -n argocd get svc argocd-server -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 
+echo "Login to ArgoCD as admin..."
+argocd login "$ARGOCD_IP" \
+  --username admin \
+  --password "$CURRENT_ADMIN_PASSWORD" \
+  --insecure
+
+echo "Change password for image-updater account..."
 argocd account update-password \
   --account image-updater \
   --new-password 123456789 \
@@ -55,6 +66,7 @@ argocd account update-password \
   --server "$ARGOCD_IP" \
   --insecure
 
+echo "Change password for admin account..."
 argocd account update-password \
   --account admin \
   --new-password 123456789 \
@@ -62,13 +74,27 @@ argocd account update-password \
   --server "$ARGOCD_IP" \
   --insecure
 
+echo "Login to ArgoCD as image-updater..."
 argocd login "$ARGOCD_IP" \
   --username image-updater \
   --password 123456789 \
   --insecure
 
 TOKEN=$(argocd account generate-token --account image-updater)
-helm uninstall argocd-image-updater --namespace argocd-image-updater || true
+
+helm uninstall argocd-image-updater --namespace argocd-image-updater
+kubectl delete clusterrole argocd-application-controller \
+  argocd-server \
+  argocd-image-updater \
+  argocd-viewer \
+  argocd-image-updater-role 
+
+kubectl delete clusterrolebinding argocd-application-controller \
+  argocd-server \
+  argocd-image-updater \
+  argocd-image-updater-binding
+
+echo "Installing ArgoCD Image Updater..."
 helm install argocd-image-updater argo/argocd-image-updater \
   --namespace argocd-image-updater \
   --create-namespace \
@@ -78,7 +104,7 @@ echo "ArgoCD Image Updater setup complete."
 
 # ArgoCD Application Setup
 echo "Setting up ArgoCD applications..."
-helm uninstall argocd-apps --namespace argocd || true
+helm uninstall argocd-apps --namespace argocd 
 helm install argocd-apps ./argocd-apps \
   --namespace argocd \
   --create-namespace
