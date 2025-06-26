@@ -59,7 +59,14 @@ argocd account update-password \
   --new-password 123456789 \
   --current-password $CURRENT_ADMIN_PASSWORD \
   --server "$ARGOCD_IP" \
-  --insecure  
+  --insecure
+
+argocd account update-password \
+  --account admin \
+  --new-password 123456789 \
+  --current-password $CURRENT_ADMIN_PASSWORD \
+  --server "$ARGOCD_IP" \
+  --insecure
 
 ARGOCD_IP=$(kubectl -n argocd get svc argocd-server -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 argocd login "$ARGOCD_IP" \
