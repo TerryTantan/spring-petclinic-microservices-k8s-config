@@ -2,22 +2,22 @@ namespace: dev
 image:
   repository: terrytantan
   names:
-    config-server-dev: spring-petclinic-config-server-dev
-    discovery-server-dev: spring-petclinic-discovery-server-dev
-    admin-server-dev: spring-petclinic-admin-server-dev
-    api-gateway-dev: spring-petclinic-api-gateway-dev
-    customers-service-dev: spring-petclinic-customers-service-dev
-    genai-service-dev: spring-petclinic-genai-service-dev
-    vets-service-dev: spring-petclinic-vets-service-dev
-    visits-service-dev: spring-petclinic-visits-service-dev
+    config-server-dev: terrytantan/spring-petclinic-config-server-dev
+    discovery-server-dev: terrytantan/spring-petclinic-discovery-server-dev
+    admin-server-dev: terrytantan/spring-petclinic-admin-server-dev
+    api-gateway-dev: terrytantan/spring-petclinic-api-gateway-dev
+    customers-service-dev: terrytantan/spring-petclinic-customers-service-dev
+    genai-service-dev: terrytantan/spring-petclinic-genai-service-dev
+    vets-service-dev: terrytantan/spring-petclinic-vets-service-dev
+    visits-service-dev: terrytantan/spring-petclinic-visits-service-dev
 tags:
-  config-server-dev: latest
-  discovery-server-dev: latest
+  config-server-dev: last-dance
+  discovery-server-dev: last-dance
   tracing-server-dev: latest
-  admin-server-dev: latest
-  api-gateway-dev: latest
-  customers-service-dev: latest
-  genai-service-dev: latest
-  vets-service-dev: latest
-  visits-service-dev: latest
+  admin-server-dev: last-dance
+  api-gateway-dev: last-dance
+  customers-service-dev: last-dance
+  genai-service-dev: last-dance
+  vets-service-dev: last-dance
+  visits-service-dev: last-dance
 lokiNamespace: dev
