@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: {{ .root.containerName }}
-          image: {{ and (not (empty .image.repository)) (not (contains "/" .root.image.name)) | ternary (print .image.repository "/") "" }}{{ .root.image.name }}:{{ required "A tag must be provided" .tag }}
+          image: {{ and (not (empty .image.repository)) (not (contains "/" .root.image.name)) | ternary (print .image.repository "/") "" }}{{ .root.image.name }}-{{ .namespace }}:{{ required "A tag must be provided" .tag }}
           ports:
             - containerPort: {{ .root.port }}
           env:
