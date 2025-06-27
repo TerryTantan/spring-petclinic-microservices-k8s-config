@@ -13,7 +13,6 @@ image:
 tags:
   config-server-dev: last-dance
   discovery-server-dev: last-dance
-  tracing-server-dev: latest
   admin-server-dev: last-dance
   api-gateway-dev: last-dance
   customers-service-dev: last-dance
