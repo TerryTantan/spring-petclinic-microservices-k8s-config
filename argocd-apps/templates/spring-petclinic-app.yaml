@@ -21,7 +21,7 @@ metadata:
       {{- $full := printf "%s-%s" $name $ns }}
     argocd-image-updater.argoproj.io/{{ $full }}.helm-value: tags.{{ $full }}
     argocd-image-updater.argoproj.io/{{ $full }}.update-strategy: newest-build
-    argocd-image-updater.argoproj.io/{{ $full }}.pull-secret: secret:argocd-image-updater/dockerhub-creds#secret
+    argocd-image-updater.argoproj.io/{{ $full }}.pull-secret: "secret:argocd-image-updater/dockerhub-creds#secret"
     {{- end }}
     argocd-image-updater.argoproj.io/write-back-method: git
     argocd-image-updater.argoproj.io/write-back-target: "helmvalues:/spring-petclinic/values-{{ $namespace }}.yaml"
