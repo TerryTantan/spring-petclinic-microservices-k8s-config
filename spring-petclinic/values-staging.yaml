@@ -14,10 +14,10 @@ tags:
   config-server-staging: latest-special-ne
   discovery-server-staging: latest-special-ne
   tracing-server-staging: latest
-  admin-server-staging: latest-2
+  admin-server-staging: latest-special-ne
   api-gateway-staging: latest-special-ne
   customers-service-staging: latest-special-ne
-  genai-service-staging: latest-2
+  genai-service-staging: latest-special-ne
   vets-service-staging: latest-special-ne
   visits-service-staging: latest-special-ne
 lokiNamespace: staging
