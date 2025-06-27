@@ -1,0 +1,15 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: dockerhub-creds
+  namespace: argocd-image-updater
+spec:
+  encryptedData:
+    secret: AgCS1KfSCt3aP4bHdXneSkH+qxgUFjpI3KaEAPp7Exk85qIa46XoSqa2SRfImV2Mg3gbSthWzbs5nsref8+/7nMPSBBoceRulN9syi0mLUYcoX63+fb4BYACqdLoWSfwzdGcmvZUrU0aq42aVYMZjTVvSRzUMN4/+e/1X3QmtShjAQA4aeXuVY7IZpk4KKSsBoNGQcO48FmaYorUUo1kZW5lsNrJIIHkDag4n0hq7HGyP3DWFrM17SV0k935+01rifLwRt7PwnIUAYoQyXfBlvUCsaSdPfeSrjpzv5LaFdfH64pLfMo447RkqLbJiOGKZQZAyRwIDWN3XQdyQE+9/VLn6df5Hs2nsLZK8fcBGlUSY4xMwjqEsQdU/qMSjOCMXcn9XIT6X+HE8Sg1BOcIvwC6u78hUi3sViyIMVz1+K9fYX3ORorimY2cz/fhi268eU9bdPCwUm5yIpcbHB28zo7MSdBLY3iIj1LtAmtff95pI/akXKQGgMscMTzvWzB9UHs+XxwjRPByxpXXEc/w8n1cuhaod7OsaoHGVGRRz9QkDmnevYouJ5U2ntsvUrDODqTgd4+1YMSG5DRWbjjALLTJzNm93qeCRFE0GTQIhTq4Rj82prH4n52rnarHl0y+MMaffM7/qeuyQsDZcTNWtrD+xeEISyyqheVnqnXoPByC0v0tVGrnlKejV/C7hN3GA5JZKw1+EWecIcpFqDPQD6b01Mx8urJCWRnsA0rpuK/m/TfERCNVSLBSi1bEFdGiWWY=
+  template:
+    metadata:
+      creationTimestamp: null
+      name: dockerhub-creds
+      namespace: argocd-image-updater
