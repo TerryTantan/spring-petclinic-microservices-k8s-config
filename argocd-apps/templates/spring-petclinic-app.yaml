@@ -22,7 +22,8 @@ metadata:
     argocd-image-updater.argoproj.io/{{ $full }}.helm-value: tags.{{ $full }}
     argocd-image-updater.argoproj.io/{{ $full }}.update-strategy: newest-build
     {{- end }}
-    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd-image-updater/git-creds
+    argocd-image-updater.argoproj.io/write-back-method: git
+    argocd-image-updater.argoproj.io/write-back-target: "helmvalues:/spring-petclinic/values-{{ $namespace }}.yaml"
     argocd-image-updater.argoproj.io/git-repository: {{ $.Values.application.repo.url }}
     argocd-image-updater.argoproj.io/git-branch: main
 spec:
