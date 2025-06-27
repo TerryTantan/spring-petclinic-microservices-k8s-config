@@ -11,13 +11,13 @@ image:
     vets-service-staging: terrytantan/spring-petclinic-vets-service-staging
     visits-service-staging: terrytantan/spring-petclinic-visits-service-staging
 tags:
-  config-server-staging: latest-2
-  discovery-server-staging: latest-2
+  config-server-staging: latest-special-ne
+  discovery-server-staging: latest-special-ne
   tracing-server-staging: latest
   admin-server-staging: latest-2
-  api-gateway-staging: latest-2
-  customers-service-staging: latest-2
+  api-gateway-staging: latest-special-ne
+  customers-service-staging: latest-special-ne
   genai-service-staging: latest-2
-  vets-service-staging: latest-2
-  visits-service-staging: latest-2
+  vets-service-staging: latest-special-ne
+  visits-service-staging: latest-special-ne
 lokiNamespace: staging
