@@ -1,6 +1,6 @@
 namespace: dev
 image:
-  repository: terrytantan
+  repository: tantanii
 tags:
   config-server-dev: latest
   discovery-server-dev: latest
