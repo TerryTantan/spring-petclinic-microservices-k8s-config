@@ -20,7 +20,7 @@ metadata:
     {{- range $i, $name := $.Values.application.image.base }}
       {{- $full := printf "%s-%s" $name $ns }}
     argocd-image-updater.argoproj.io/{{ $full }}.helm-value: tags.{{ $full }}
-    argocd-image-updater.argoproj.io/{{ $full }}.update-strategy: latest
+    argocd-image-updater.argoproj.io/{{ $full }}.update-strategy: newest-build
     {{- end }}
     argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd-image-updater/git-creds
 spec:
