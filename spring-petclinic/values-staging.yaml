@@ -1,6 +1,6 @@
 namespace: staging
 image:
-  repository: tantanii
+  repository: terrytantan
 tags:
   config-server-staging: latest
   discovery-server-staging: latest

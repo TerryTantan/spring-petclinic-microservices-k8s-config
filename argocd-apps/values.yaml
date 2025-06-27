@@ -8,7 +8,7 @@ application:
     - dev
     - staging
   image:
-    repository: tantanii
+    repository: terrytantan
     base:
       - config-server
       - discovery-server
