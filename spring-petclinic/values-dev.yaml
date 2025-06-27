@@ -1,6 +1,15 @@
 namespace: dev
 image:
   repository: terrytantan
+  names:
+    config-server-dev: spring-petclinic-config-server-dev
+    discovery-server-dev: spring-petclinic-discovery-server-dev
+    admin-server-dev: spring-petclinic-admin-server-dev
+    api-gateway-dev: spring-petclinic-api-gateway-dev
+    customers-service-dev: spring-petclinic-customers-service-dev
+    genai-service-dev: spring-petclinic-genai-service-dev
+    vets-service-dev: spring-petclinic-vets-service-dev
+    visits-service-dev: spring-petclinic-visits-service-dev
 tags:
   config-server-dev: latest
   discovery-server-dev: latest

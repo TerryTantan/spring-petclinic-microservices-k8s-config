@@ -19,6 +19,7 @@ metadata:
     {{- $ns := $namespace }}
     {{- range $i, $name := $.Values.application.image.base }}
       {{- $full := printf "%s-%s" $name $ns }}
+    argocd-image-updater.argoproj.io/{{ $full }}.helm.image-name: image.names.{{ $full }}
     argocd-image-updater.argoproj.io/{{ $full }}.helm.image-tag: tags.{{ $full }}
     argocd-image-updater.argoproj.io/{{ $full }}.update-strategy: newest-build
     argocd-image-updater.argoproj.io/{{ $full }}.pull-secret: "secret:argocd-image-updater/dockerhub-creds#secret"

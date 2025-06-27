@@ -1,6 +1,15 @@
 namespace: staging
 image:
   repository: terrytantan
+  names:
+    config-server-staging: spring-petclinic-config-server-staging
+    discovery-server-staging: spring-petclinic-discovery-server-staging
+    admin-server-staging: spring-petclinic-admin-server-staging
+    api-gateway-staging: spring-petclinic-api-gateway-staging
+    customers-service-staging: spring-petclinic-customers-service-staging
+    genai-service-staging: spring-petclinic-genai-service-staging
+    vets-service-staging: spring-petclinic-vets-service-staging
+    visits-service-staging: spring-petclinic-visits-service-staging
 tags:
   config-server-staging: latest
   discovery-server-staging: latest
