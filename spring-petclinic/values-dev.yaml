@@ -12,9 +12,9 @@ image:
     visits-service-dev: terrytantan/spring-petclinic-visits-service-dev
 tags:
   config-server-dev: loki-3
-  discovery-server-dev: loki-3
+  discovery-server-dev: loki-4
   admin-server-dev: loki-2
-  api-gateway-dev: loki-3
+  api-gateway-dev: loki-4
   customers-service-dev: loki-2
   genai-service-dev: loki-2
   vets-service-dev: loki-2
