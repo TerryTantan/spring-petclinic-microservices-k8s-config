@@ -13,10 +13,10 @@ image:
 tags:
   config-server-dev: loki-4
   discovery-server-dev: loki-4
-  admin-server-dev: loki-2
+  admin-server-dev: loki-4
   api-gateway-dev: loki-4
-  customers-service-dev: loki-2
-  genai-service-dev: loki-2
+  customers-service-dev: loki-4
+  genai-service-dev: loki-4
   vets-service-dev: loki-4
   visits-service-dev: loki-4
 lokiNamespace: dev
