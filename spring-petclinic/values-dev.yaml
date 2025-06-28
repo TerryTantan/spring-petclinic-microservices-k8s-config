@@ -13,10 +13,10 @@ image:
 tags:
   config-server-dev: "20250628233804"
   discovery-server-dev: "20250628233804"
-  admin-server-dev: loki-20250628184552
+  admin-server-dev: "20250628233804"
   api-gateway-dev: "20250628233804"
-  customers-service-dev: loki-20250628184552
-  genai-service-dev: loki-20250628184552
-  vets-service-dev: loki-20250628184552
-  visits-service-dev: loki-20250628184552
+  customers-service-dev: "20250628233804"
+  genai-service-dev: "20250628233804"
+  vets-service-dev: "20250628233804"
+  visits-service-dev: "20250628233804"
 lokiNamespace: dev
