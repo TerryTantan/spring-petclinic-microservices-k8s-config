@@ -28,6 +28,18 @@ data:
         access: proxy
         url: http://loki:3100
         isDefault: false
+        jsonData:
+          derivedFields:
+            - datasourceUid: "b4adc7d5-7af6-45a8-af81-d3b49ab3c878"
+              matcherRegex: "trace_id[=:]\\s*([a-f0-9]{16,32})"
+              name: "TraceID"
+              url: "${__value.raw}"
+              urlDisplayLabel: "View Trace"
+            - datasourceUid: "b4adc7d5-7af6-45a8-af81-d3b49ab3c878"
+              matcherRegex: "\"trace_id\":\\s*\"([a-f0-9]{16,32})\""
+              name: "Trace"
+              url: "${__value.raw}"
+              urlDisplayLabel: "Open in Zipkin"
 
 ---
 # ConfigMap for dashboards
