@@ -11,12 +11,12 @@ image:
     vets-service-dev: terrytantan/spring-petclinic-vets-service-dev
     visits-service-dev: terrytantan/spring-petclinic-visits-service-dev
 tags:
-  config-server-dev: last-dance
-  discovery-server-dev: last-dance
+  config-server-dev: loki
+  discovery-server-dev: loki
   admin-server-dev: last-dance
-  api-gateway-dev: last-dance
-  customers-service-dev: last-dance
-  genai-service-dev: last-dance
-  vets-service-dev: last-dance
-  visits-service-dev: last-dance
+  api-gateway-dev: loki
+  customers-service-dev: loki
+  genai-service-dev: loki
+  vets-service-dev: loki
+  visits-service-dev: loki
 lokiNamespace: dev
