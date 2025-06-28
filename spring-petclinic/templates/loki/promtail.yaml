@@ -83,6 +83,8 @@ data:
           - role: pod
         pipeline_stages:
           - cri: {}
+          - regex:
+              expression: 'traceId=(?P<traceId>[0-9a-f]+).*spanId=(?P<spanId>[0-9a-f]+)'
           - json:
               expressions:
                 traceId: traceId
@@ -117,6 +119,8 @@ data:
           - role: pod
         pipeline_stages:
           - cri: {}
+          - regex:
+              expression: 'traceId=(?P<traceId>[0-9a-f]+).*spanId=(?P<spanId>[0-9a-f]+)'
           - json:
               expressions:
                 traceId: traceId
@@ -172,6 +176,8 @@ data:
               __path__: /var/log/containers/*.log
         pipeline_stages:
           - cri: {}
+          - regex:
+              expression: 'traceId=(?P<traceId>[0-9a-f]+).*spanId=(?P<spanId>[0-9a-f]+)'
           - json:
               expressions:
                 traceId: traceId
