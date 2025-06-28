@@ -11,10 +11,10 @@ image:
     vets-service-dev: terrytantan/spring-petclinic-vets-service-dev
     visits-service-dev: terrytantan/spring-petclinic-visits-service-dev
 tags:
-  config-server-dev: loki-20250628184552
-  discovery-server-dev: loki-20250628184552
+  config-server-dev: "20250628233804"
+  discovery-server-dev: "20250628233804"
   admin-server-dev: loki-20250628184552
-  api-gateway-dev: loki-20250628184552
+  api-gateway-dev: "20250628233804"
   customers-service-dev: loki-20250628184552
   genai-service-dev: loki-20250628184552
   vets-service-dev: loki-20250628184552
