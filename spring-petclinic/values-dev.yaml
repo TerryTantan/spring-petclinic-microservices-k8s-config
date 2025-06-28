@@ -17,6 +17,6 @@ tags:
   api-gateway-dev: loki-4
   customers-service-dev: loki-2
   genai-service-dev: loki-2
-  vets-service-dev: loki-2
-  visits-service-dev: loki-3
+  vets-service-dev: loki-4
+  visits-service-dev: loki-4
 lokiNamespace: dev
