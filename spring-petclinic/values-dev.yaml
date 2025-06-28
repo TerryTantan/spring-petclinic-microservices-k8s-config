@@ -13,7 +13,7 @@ image:
 tags:
   config-server-dev: loki
   discovery-server-dev: loki
-  admin-server-dev: last-dance
+  admin-server-dev: loki
   api-gateway-dev: loki
   customers-service-dev: loki
   genai-service-dev: loki
