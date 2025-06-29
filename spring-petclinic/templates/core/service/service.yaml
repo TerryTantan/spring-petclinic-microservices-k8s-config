@@ -4,3 +4,22 @@
 ---
 {{- end }}
 {{- end }}
+
+---
+# Additional service for Zipkin tracing server with specific config
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: tracing-server
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9411
+      targetPort: 9411
+      protocol: TCP
+  selector:
+    app: tracing-server
