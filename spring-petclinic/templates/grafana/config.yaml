@@ -100,6 +100,37 @@ data:
         "to": "now"
       },
       "refresh": "5s",
+      "templating": {
+        "list": [
+          {
+            "name": "namespace",
+            "type": "custom",
+            "label": "Namespace",
+            "current": {
+              "value": "dev",
+              "text": "dev"
+            },
+            "options": [
+              {
+                "value": "dev",
+                "text": "dev"
+              },
+              {
+                "value": "staging", 
+                "text": "staging"
+              },
+              {
+                "value": ".*",
+                "text": "All"
+              }
+            ],
+            "query": "dev,staging,.*",
+            "hide": 0,
+            "includeAll": false,
+            "multi": false
+          }
+        ]
+      },
       "panels": [
         {
           "id": 1,
@@ -299,7 +330,7 @@ data:
             {
               "expr": "sum(rate(http_server_requests_seconds_count[5m])) by (job)",
               "interval": "",
-              "legendFormat": "{{job}}",
+              "legendFormat": "{{`{{job}}`}}",
               "refId": "A",
               "datasource": { "type": "prometheus", "uid": "prometheus" }
             }
@@ -331,7 +362,7 @@ data:
           },
           "targets": [
             {
-              "expr": "{namespace=\"{{ .Values.namespace }}\", app=~\".*-service|api-gateway\"} |= \"\"",
+              "expr": "{namespace=~\"$namespace\", app=~\".*-service|api-gateway\"} |= \"\"",
               "refId": "A",
               "datasource": { "type": "loki", "uid": "loki" },
               "maxLines": 1000
@@ -364,7 +395,7 @@ data:
           },
           "targets": [
             {
-              "expr": "{namespace=\"{{ .Values.namespace }}\", app=~\".*-service|api-gateway\"} |~ \"(?i)(error|exception|fail|warn)\"",
+              "expr": "{namespace=~\"$namespace\", app=~\".*-service|api-gateway\"} |~ \"(?i)(error|exception|fail|warn)\"",
               "refId": "A",
               "datasource": { "type": "loki", "uid": "loki" },
               "maxLines": 500
@@ -414,7 +445,7 @@ data:
           },
           "targets": [
             {
-              "expr": "sum(rate({namespace=\"{{ .Values.namespace }}\", app=~\".*-service|api-gateway\"}[5m])) by (app)",
+              "expr": "sum(rate({namespace=~\"$namespace\", app=~\".*-service|api-gateway\"}[5m])) by (app)",
               "refId": "A",
               "datasource": { "type": "loki", "uid": "loki" }
             }
@@ -446,7 +477,7 @@ data:
           },
           "targets": [
             {
-              "expr": "{namespace=\"{{ .Values.namespace }}\", app=~\".*-service|api-gateway\"} |~ \"traceId\"",
+              "expr": "{namespace=~\"$namespace\", app=~\".*-service|api-gateway\"} |~ \"traceId\"",
               "refId": "A",
               "datasource": { "type": "loki", "uid": "loki" },
               "maxLines": 200
