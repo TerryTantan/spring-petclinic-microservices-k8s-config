@@ -29,14 +29,15 @@ get_tags_from_environment() {
     fi
     
     if [ -f "$values_file" ]; then
-        config_server_tag=$(grep "config-server-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
-        discovery_server_tag=$(grep "discovery-server-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
-        admin_server_tag=$(grep "admin-server-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
-        api_gateway_tag=$(grep "api-gateway-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
-        customers_service_tag=$(grep "customers-service-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
-        genai_service_tag=$(grep "genai-service-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
-        vets_service_tag=$(grep "vets-service-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
-        visits_service_tag=$(grep "visits-service-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        # Extract tags from the tags: section only, not from image.names section
+        config_server_tag=$(sed -n '/^tags:/,/^[a-zA-Z]/p' "$values_file" | grep "config-server-${env_suffix}:" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        discovery_server_tag=$(sed -n '/^tags:/,/^[a-zA-Z]/p' "$values_file" | grep "discovery-server-${env_suffix}:" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        admin_server_tag=$(sed -n '/^tags:/,/^[a-zA-Z]/p' "$values_file" | grep "admin-server-${env_suffix}:" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        api_gateway_tag=$(sed -n '/^tags:/,/^[a-zA-Z]/p' "$values_file" | grep "api-gateway-${env_suffix}:" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        customers_service_tag=$(sed -n '/^tags:/,/^[a-zA-Z]/p' "$values_file" | grep "customers-service-${env_suffix}:" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        genai_service_tag=$(sed -n '/^tags:/,/^[a-zA-Z]/p' "$values_file" | grep "genai-service-${env_suffix}:" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        vets_service_tag=$(sed -n '/^tags:/,/^[a-zA-Z]/p' "$values_file" | grep "vets-service-${env_suffix}:" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        visits_service_tag=$(sed -n '/^tags:/,/^[a-zA-Z]/p' "$values_file" | grep "visits-service-${env_suffix}:" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
         
         # Set environment suffix for image names
         image_env_suffix="$env_suffix"
@@ -117,14 +118,14 @@ image:
     vets-service-$image_env_suffix: terrytantan/spring-petclinic-vets-service-$image_env_suffix
     visits-service-$image_env_suffix: terrytantan/spring-petclinic-visits-service-$image_env_suffix
 tags:
-  config-server-$image_env_suffix: $config_server_tag
-  discovery-server-$image_env_suffix: $discovery_server_tag
-  admin-server-$image_env_suffix: $admin_server_tag
-  api-gateway-$image_env_suffix: $api_gateway_tag
-  customers-service-$image_env_suffix: $customers_service_tag
-  genai-service-$image_env_suffix: $genai_service_tag
-  vets-service-$image_env_suffix: $vets_service_tag
-  visits-service-$image_env_suffix: $visits_service_tag
+  config-server-$image_env_suffix: \"$config_server_tag\"
+  discovery-server-$image_env_suffix: \"$discovery_server_tag\"
+  admin-server-$image_env_suffix: \"$admin_server_tag\"
+  api-gateway-$image_env_suffix: \"$api_gateway_tag\"
+  customers-service-$image_env_suffix: \"$customers_service_tag\"
+  genai-service-$image_env_suffix: \"$genai_service_tag\"
+  vets-service-$image_env_suffix: \"$vets_service_tag\"
+  visits-service-$image_env_suffix: \"$visits_service_tag\"
 lokiNamespace: $namespace
 ingressPrefix: $ingress_prefix"
 
