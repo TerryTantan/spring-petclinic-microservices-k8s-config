@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+      annotations:
+        config-hash: {{ include (print $.Template.BasePath "/prometheus/prometheus-config.yaml") . | sha256sum | trunc 8 | quote }}
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus
+          ports:
+            - containerPort: 9090
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/prometheus
+      volumes:
+        - name: config-volume
+          configMap:
+            name: prometheus-config
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-deployment
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: alertmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+      annotations:
+        config-hash: {{ include (print $.Template.BasePath "/prometheus/alertmanager-config.yaml") . | sha256sum | trunc 8 | quote }}
+    spec:
+      containers:
+        - name: alertmanager
+          image: prom/alertmanager
+          ports:
+            - containerPort: 9093
+          args:
+            - --config.file=/etc/alertmanager/alertmanager.yml
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/alertmanager
+      volumes:
+        - name: config-volume
+          configMap:
+            name: alertmanager-config
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-discord-deployment
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: alertmanager-discord
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager-discord
+  template:
+    metadata:
+      labels:
+        app: alertmanager-discord
+    spec:
+      containers:
+        - name: alertmanager-discord
+          image: benjojo/alertmanager-discord
+          ports:
+            - containerPort: 9094
+          env:
+            - name: DISCORD_WEBHOOK
+              valueFrom:
+                secretKeyRef:
+                  name: discord-webhook-secret
+                  key: webhookUrl
