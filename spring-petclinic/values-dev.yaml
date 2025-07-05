@@ -15,7 +15,7 @@ tags:
   discovery-server-dev: "20250705155301"
   admin-server-dev: "20250705155301"
   api-gateway-dev: "20250705155301"
-  customers-service-dev: "20250705155301"
+  customers-service-dev: "ed557bf1885911ff062c657e33d1ce407dd2be13"
   genai-service-dev: "20250705155301"
   vets-service-dev: "2921e8d764118bf5490270a5523a21ceb2c8a0a4"
   visits-service-dev: "6e64413b6ad1160104c40c69583249568f0c8599"
