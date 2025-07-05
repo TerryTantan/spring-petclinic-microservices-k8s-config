@@ -58,7 +58,46 @@ data:
         url: http://tracing-server:9411
         uid: zipkin
         isDefault: false
-
+        jsonData:
+          tracesToLogsV2:
+            # Field with an internal link pointing to a logs data source in Grafana.
+            # datasourceUid value must match the uid value of the logs data source.
+            datasourceUid: 'loki'
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '-1h'
+            tags: ['job', 'instance', 'pod', 'namespace', 'service.name']
+            filterByTraceID: true
+            filterBySpanID: false
+            customQuery: false
+          tracesToMetrics:
+            # Field with an internal link pointing to a metrics data source in Grafana.
+            # datasourceUid value must match the uid value of the metrics data source.
+            datasourceUid: 'prometheus'
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '-1h'
+            tags: [
+              { key: 'service.name', value: 'service' },
+              { key: 'job' },
+              { key: 'instance' },
+              { key: 'operation' },
+              { key: 'http.method', value: 'method' },
+              { key: 'http.status_code', value: 'status_code' }
+            ]
+            queries:
+              - name: 'Request Rate'
+                query: 'sum(rate(http_requests_total{$$__tags}[5m]))'
+              - name: 'Error Rate'
+                query: 'sum(rate(http_requests_total{$$__tags,status_code=~"5.."}[5m]))'
+              - name: 'Request Duration P95'
+                query: 'histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{$$__tags}[5m])) by (le))'
+              - name: 'Request Duration P99'
+                query: 'histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{$$__tags}[5m])) by (le))'
+              - name: 'Span Metrics - Request Rate'
+                query: 'sum(rate(traces_spanmetrics_latency_bucket{$$__tags}[5m]))'
+              - name: 'Span Metrics - Error Rate'
+                query: 'sum(rate(traces_spanmetrics_calls_total{$$__tags,status_code="STATUS_CODE_ERROR"}[5m]))'
+              - name: 'Span Metrics - Duration P95'
+                query: 'histogram_quantile(0.95, sum(rate(traces_spanmetrics_latency_bucket{$$__tags}[5m])) by (le))'
 ---
 # ConfigMap for dashboards
 apiVersion: v1
