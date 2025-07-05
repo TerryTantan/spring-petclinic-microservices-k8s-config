@@ -1,0 +1,532 @@
+# ConfigMap for datasources
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource-config
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: grafana
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        uid: prometheus
+        isDefault: true
+        jsonData:
+          timeInterval: "5s"
+          tlsSkipVerify: true
+          httpMethod: POST
+        secureJsonData:
+          tlsCACert: ""
+          tlsClientCert: ""
+          tlsClientKey: ""
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki:3100
+        uid: loki
+        isDefault: false
+        jsonData:
+          derivedFields:
+            - datasourceUid: "zipkin"
+              matcherRegex: "\\[[\\w-]+,([a-f0-9]{16,32}),[a-f0-9]{16,32}\\]"
+              name: "TraceID"
+              url: "$${__value.raw}"
+              urlDisplayLabel: "View Trace in Zipkin"
+            - datasourceUid: "zipkin"
+              matcherRegex: "traceId[=:]\\s*([a-f0-9]{16,32})"
+              name: "TraceID-Legacy"
+              url: "$${__value.raw}"
+              urlDisplayLabel: "View Trace in Zipkin (Legacy)"
+            - datasourceUid: "zipkin"
+              matcherRegex: "\"traceId\":\\s*\"([a-f0-9]{16,32})\""
+              name: "Trace-JSON"
+              url: "$${__value.raw}"
+              urlDisplayLabel: "Open in Zipkin (JSON)"
+            - datasourceUid: "prometheus"
+              matcherRegex: "\\[[\\w-]+,([a-f0-9]{16,32}),[a-f0-9]{16,32}\\]"
+              name: "Metrics"
+              url: "$${__value.raw}"
+              urlDisplayLabel: "View Metrics"
+      - name: Zipkin
+        type: zipkin
+        access: proxy
+        url: http://tracing-server:9411
+        uid: zipkin
+        isDefault: false
+        jsonData:
+          tracesToLogsV2:
+            # Field with an internal link pointing to a logs data source in Grafana.
+            # datasourceUid value must match the uid value of the logs data source.
+            datasourceUid: 'loki'
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '-1h'
+            tags: ['job', 'instance', 'pod', 'namespace', 'service.name']
+            filterByTraceID: true
+            filterBySpanID: false
+            customQuery: false
+          tracesToMetrics:
+            # Field with an internal link pointing to a metrics data source in Grafana.
+            # datasourceUid value must match the uid value of the metrics data source.
+            datasourceUid: 'prometheus'
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '-1h'
+            tags: [
+              { key: 'service.name', value: 'service' },
+              { key: 'job' },
+              { key: 'instance' },
+              { key: 'operation' },
+              { key: 'http.method', value: 'method' },
+              { key: 'http.status_code', value: 'status_code' }
+            ]
+            queries:
+              - name: 'Request Rate'
+                query: 'sum(rate(http_requests_total{$$__tags}[5m]))'
+              - name: 'Error Rate'
+                query: 'sum(rate(http_requests_total{$$__tags,status_code=~"5.."}[5m]))'
+              - name: 'Request Duration P95'
+                query: 'histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{$$__tags}[5m])) by (le))'
+              - name: 'Request Duration P99'
+                query: 'histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{$$__tags}[5m])) by (le))'
+              - name: 'Span Metrics - Request Rate'
+                query: 'sum(rate(traces_spanmetrics_latency_bucket{$$__tags}[5m]))'
+              - name: 'Span Metrics - Error Rate'
+                query: 'sum(rate(traces_spanmetrics_calls_total{$$__tags,status_code="STATUS_CODE_ERROR"}[5m]))'
+              - name: 'Span Metrics - Duration P95'
+                query: 'histogram_quantile(0.95, sum(rate(traces_spanmetrics_latency_bucket{$$__tags}[5m])) by (le))'
+---
+# ConfigMap for dashboards
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-config
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: grafana
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards
+
+---
+# Dashboard
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-spring-petclinic
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: grafana
+data:
+  spring-petclinic-dashboard.json: |
+    {
+      "id": null,
+      "uid": "spring-petclinic-observability",
+      "title": "Spring PetClinic Observability Dashboard",
+      "tags": ["spring-petclinic", "observability"],
+      "timezone": "browser",
+      "schemaVersion": 30,
+      "version": 1,
+      "time": {
+        "from": "now-30m",
+        "to": "now"
+      },
+      "refresh": "5s",
+      "templating": {
+        "list": [
+          {
+            "name": "namespace",
+            "type": "custom",
+            "label": "Namespace",
+            "current": {
+              "value": "dev",
+              "text": "dev"
+            },
+            "options": [
+              {
+                "value": "dev",
+                "text": "dev"
+              },
+              {
+                "value": "staging", 
+                "text": "staging"
+              },
+              {
+                "value": ".*",
+                "text": "All"
+              }
+            ],
+            "query": "dev,staging,.*",
+            "hide": 0,
+            "includeAll": false,
+            "multi": false
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": 1,
+          "title": "HTTP Request Rate",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "barAlignment": 0,
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "spanNulls": false,
+                "insertNulls": false,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": { "mode": "none", "group": "A" },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "scaleDistribution": { "type": "linear" },
+                "hideFrom": { "legend": false, "tooltip": false, "vis": false },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 80 }
+                ]
+              },
+              "unit": "reqps"
+            }
+          },
+          "options": {
+            "tooltip": { "mode": "single", "sort": "none" },
+            "legend": { "displayMode": "visible", "placement": "bottom" }
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_requests_seconds_count[5m]))",
+              "interval": "",
+              "legendFormat": "Total Requests/sec",
+              "refId": "A",
+              "datasource": { "type": "prometheus", "uid": "prometheus" }
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "HTTP Success Rate (2xx)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "barAlignment": 0,
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "spanNulls": false,
+                "insertNulls": false,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": { "mode": "none", "group": "A" },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "scaleDistribution": { "type": "linear" },
+                "hideFrom": { "legend": false, "tooltip": false, "vis": false },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 80 }
+                ]
+              },
+              "unit": "reqps"
+            }
+          },
+          "options": {
+            "tooltip": { "mode": "single", "sort": "none" },
+            "legend": { "displayMode": "visible", "placement": "bottom" }
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_requests_seconds_count{status=~\"2..\"}[5m]))",
+              "interval": "",
+              "legendFormat": "2xx Success/sec",
+              "refId": "A",
+              "datasource": { "type": "prometheus", "uid": "prometheus" }
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "HTTP Error Rate (5xx)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "barAlignment": 0,
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "spanNulls": false,
+                "insertNulls": false,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": { "mode": "none", "group": "A" },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "scaleDistribution": { "type": "linear" },
+                "hideFrom": { "legend": false, "tooltip": false, "vis": false },
+                "thresholdsStyle": { "mode": "line" }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 0.33 }
+                ]
+              },
+              "unit": "reqps"
+            }
+          },
+          "options": {
+            "tooltip": { "mode": "single", "sort": "none" },
+            "legend": { "displayMode": "visible", "placement": "bottom" }
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[5m]))",
+              "interval": "",
+              "legendFormat": "5xx Errors/sec",
+              "refId": "A",
+              "datasource": { "type": "prometheus", "uid": "prometheus" }
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "Request Rate by Service",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "barAlignment": 0,
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "spanNulls": false,
+                "insertNulls": false,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": { "mode": "none", "group": "A" },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "scaleDistribution": { "type": "linear" },
+                "hideFrom": { "legend": false, "tooltip": false, "vis": false },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 80 }
+                ]
+              },
+              "unit": "reqps"
+            }
+          },
+          "options": {
+            "tooltip": { "mode": "single", "sort": "none" },
+            "legend": { "displayMode": "visible", "placement": "bottom" }
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(http_server_requests_seconds_count[5m])) by (job)",
+              "interval": "",
+              "legendFormat": "{{`{{job}}`}}",
+              "refId": "A",
+              "datasource": { "type": "prometheus", "uid": "prometheus" }
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "title": "Application Logs",
+          "type": "logs",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "hideFrom": { "legend": false, "tooltip": false, "vis": false }
+              },
+              "mappings": []
+            }
+          },
+          "options": {
+            "showTime": true,
+            "showLabels": true,
+            "showCommonLabels": false,
+            "wrapLogMessage": false,
+            "prettifyLogMessage": false,
+            "enableLogDetails": true,
+            "dedupStrategy": "none",
+            "sortOrder": "Descending"
+          },
+          "targets": [
+            {
+              "expr": "{namespace=~\"$namespace\", app=~\".*-service|api-gateway\"} |= \"\"",
+              "refId": "A",
+              "datasource": { "type": "loki", "uid": "loki" },
+              "maxLines": 1000
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Error Logs (Last 1 Hour)",
+          "type": "logs",
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "hideFrom": { "legend": false, "tooltip": false, "vis": false }
+              },
+              "mappings": []
+            }
+          },
+          "options": {
+            "showTime": true,
+            "showLabels": true,
+            "showCommonLabels": false,
+            "wrapLogMessage": false,
+            "prettifyLogMessage": false,
+            "enableLogDetails": true,
+            "dedupStrategy": "none",
+            "sortOrder": "Descending"
+          },
+          "targets": [
+            {
+              "expr": "{namespace=~\"$namespace\", app=~\".*-service|api-gateway\"} |~ \"(?i)(error|exception|fail|warn)\"",
+              "refId": "A",
+              "datasource": { "type": "loki", "uid": "loki" },
+              "maxLines": 500
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "Log Volume by Service",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "linear",
+                "barAlignment": 0,
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "spanNulls": false,
+                "insertNulls": false,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": { "mode": "normal", "group": "A" },
+                "axisPlacement": "auto",
+                "axisLabel": "",
+                "scaleDistribution": { "type": "linear" },
+                "hideFrom": { "legend": false, "tooltip": false, "vis": false },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 80 }
+                ]
+              },
+              "unit": "logs/sec"
+            }
+          },
+          "options": {
+            "tooltip": { "mode": "single", "sort": "none" },
+            "legend": { "displayMode": "visible", "placement": "bottom" }
+          },
+          "targets": [
+            {
+              "expr": "sum(rate({namespace=~\"$namespace\", app=~\".*-service|api-gateway\"}[5m])) by (app)",
+              "refId": "A",
+              "datasource": { "type": "loki", "uid": "loki" }
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "title": "Trace Correlation",
+          "type": "logs",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "hideFrom": { "legend": false, "tooltip": false, "vis": false }
+              },
+              "mappings": []
+            }
+          },
+          "options": {
+            "showTime": true,
+            "showLabels": true,
+            "showCommonLabels": false,
+            "wrapLogMessage": false,
+            "prettifyLogMessage": false,
+            "enableLogDetails": true,
+            "dedupStrategy": "none",
+            "sortOrder": "Descending"
+          },
+          "targets": [
+            {
+              "expr": "{namespace=~\"$namespace\", app=~\".*-service|api-gateway\"} |~ \"\\\\[[\\\\w-]+,[a-f0-9]{16,32},[a-f0-9]{16,32}\\\\]|traceId\"",
+              "refId": "A",
+              "datasource": { "type": "loki", "uid": "loki" },
+              "maxLines": 200
+            }
+          ]
+        }
+      ]
+    }
