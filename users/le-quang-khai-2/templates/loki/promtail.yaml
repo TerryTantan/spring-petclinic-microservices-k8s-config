@@ -1,0 +1,223 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: promtail
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: promtail-{{ .Values.namespace }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "nodes", "nodes/proxy", "endpoints"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: promtail-{{ .Values.namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: promtail-{{ .Values.namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: promtail
+    namespace: {{ required "A namespace must be provided" .Values.namespace }}
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: promtail
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels: { app: promtail }
+spec:
+  selector:
+    matchLabels: { app: promtail }
+  template:
+    metadata:
+      labels: { app: promtail }
+    spec:
+      serviceAccountName: promtail
+      containers:
+        - name: promtail
+          image: grafana/promtail:2.9.3
+          args: [ "-config.file=/etc/promtail/promtail.yaml" ]
+          volumeMounts:
+            - { name: config, mountPath: /etc/promtail }
+            - { name: varlog, mountPath: /var/log }
+            - { name: containers, mountPath: /var/lib/docker/containers, readOnly: true }
+            - { name: varlog-containers, mountPath: /var/log/containers }
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      volumes:
+        - name: config
+          configMap: { name: promtail-config }
+        - name: varlog
+          hostPath: { path: /var/log }
+        - name: containers
+          hostPath: { path: /var/lib/docker/containers }
+        - name: varlog-containers
+          hostPath: { path: /var/log/containers }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: promtail-config
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+data:
+  promtail.yaml: |
+    server:
+      http_listen_port: 9080
+      grpc_listen_port: 0
+    positions:
+      filename: /tmp/positions.yaml
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+        timeout: 10s
+        backoff_config:
+          min_period: 100ms
+          max_period: 10s
+          max_retries: 10
+        external_labels:
+          cluster: spring-petclinic
+          namespace: {{ .Values.namespace }}
+    scrape_configs:
+      # Scrape logs from Kubernetes pods in the current namespace
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - {{ .Values.namespace }}
+        pipeline_stages:
+          - cri: {}
+          # Extract traceId and spanId from Spring Boot Sleuth format: [service-name,traceId,spanId]
+          - regex:
+              expression: '\[[\w-]+,(?P<traceId>[a-f0-9]{16,32}),(?P<spanId>[a-f0-9]{16,32})\]'
+              source: content
+          # Backup pattern for legacy Sleuth format with export flag: [appname,traceId,spanId,export]
+          - regex:
+              expression: '\[[\w-]+,(?P<traceId>[a-f0-9]{16,32}),(?P<spanId>[a-f0-9]{16,32}),\w*\]'
+              source: content
+          # Extract from key-value format (fallback)
+          - regex:
+              expression: '.*(?:traceId|trace[_-]?id)[=:\s]*(?P<traceId>[a-f0-9]{16,32}).*?(?:spanId|span[_-]?id)[=:\s]*(?P<spanId>[a-f0-9]{16,32})'
+              source: content
+          # Also try JSON format
+          - json:
+              expressions:
+                traceId: traceId
+                spanId: spanId
+                trace_id: trace_id
+                span_id: span_id
+                level: level
+                logger: logger
+                thread: thread
+                message: message
+          # Set labels from extracted values
+          - labels:
+              traceId:
+              spanId: 
+              trace_id:
+              span_id:
+              level:
+              logger:
+              thread:
+          # Template stage to normalize trace IDs
+          - template:
+              source: traceId
+              template: '{{ if .traceId }}{{ .traceId }}{{ else if .trace_id }}{{ .trace_id }}{{ end }}'
+          - template:
+              source: spanId  
+              template: '{{ if .spanId }}{{ .spanId }}{{ else if .span_id }}{{ .span_id }}{{ end }}'
+        relabel_configs:
+          # Only scrape pods with specific labels
+          - source_labels:
+              - __meta_kubernetes_pod_label_app
+            action: keep
+            regex: '.*-service|api-gateway|admin-server|config-server|discovery-server|tracing-server'
+          # Add pod metadata as labels
+          - source_labels:
+              - __meta_kubernetes_pod_node_name
+            target_label: __host__
+          - source_labels:
+              - __meta_kubernetes_pod_name
+            target_label: pod
+          - source_labels:
+              - __meta_kubernetes_pod_container_name
+            target_label: container
+          - source_labels:
+              - __meta_kubernetes_namespace
+            target_label: namespace
+          - source_labels:
+              - __meta_kubernetes_pod_label_app
+            target_label: app
+          - source_labels:
+              - __meta_kubernetes_pod_phase
+            target_label: phase
+          # Set log file path
+          - replacement: /var/log/pods/*$1/*.log
+            separator: /
+            source_labels:
+              - __meta_kubernetes_pod_uid
+              - __meta_kubernetes_pod_container_name
+            target_label: __path__
+
+      # Additional scrape config for container logs
+      - job_name: kubernetes-containers
+        static_configs:
+          - targets: [localhost]
+            labels:
+              job: kubernetes-containers
+              __path__: /var/log/containers/*{{ .Values.namespace }}*.log
+        pipeline_stages:
+          - cri: {}
+          # Extract traceId and spanId from Spring Boot Sleuth format: [service-name,traceId,spanId]
+          - regex:
+              expression: '\[[\w-]+,(?P<traceId>[a-f0-9]{16,32}),(?P<spanId>[a-f0-9]{16,32})\]'
+              source: content
+          # Backup pattern for legacy Sleuth format with export flag: [appname,traceId,spanId,export]
+          - regex:
+              expression: '\[[\w-]+,(?P<traceId>[a-f0-9]{16,32}),(?P<spanId>[a-f0-9]{16,32}),\w*\]'
+              source: content
+          # Extract from key-value format (fallback)
+          - regex:
+              expression: '.*(?:traceId|trace[_-]?id)[=:\s]*(?P<traceId>[a-f0-9]{16,32}).*?(?:spanId|span[_-]?id)[=:\s]*(?P<spanId>[a-f0-9]{16,32})'
+              source: content
+          - json:
+              expressions:
+                traceId: traceId
+                spanId: spanId
+                trace_id: trace_id
+                span_id: span_id
+                level: level
+                logger: logger
+          - labels:
+              traceId:
+              spanId:
+              trace_id:
+              span_id:
+              level:
+              logger:
+        relabel_configs:
+          # Extract pod info from log file path
+          - source_labels: [__path__]
+            regex: '.*/([^_]+)_([^_]+)_([^_-]+)-.*\.log'
+            target_label: pod
+            replacement: '$1'
+          - source_labels: [__path__]
+            regex: '.*/([^_]+)_([^_]+)_([^_-]+)-.*\.log'
+            target_label: namespace
+            replacement: '$2'
+          - source_labels: [__path__]
+            regex: '.*/([^_]+)_([^_]+)_([^_-]+)-.*\.log'
+            target_label: container
+            replacement: '$3'
+          - source_labels: [container]
+            target_label: app
+            replacement: '$1'
