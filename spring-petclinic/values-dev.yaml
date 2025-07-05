@@ -18,5 +18,5 @@ tags:
   customers-service-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
   genai-service-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
   vets-service-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
-  visits-service-dev: "6e64413b6ad1160104c40c69583249568f0c8599"
+  visits-service-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
 lokiNamespace: dev
