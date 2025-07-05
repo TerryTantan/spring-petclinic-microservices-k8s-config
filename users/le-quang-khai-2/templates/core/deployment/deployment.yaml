@@ -1,8 +1,0 @@
-{{- range $i, $server := .Values.servers }}
-  {{- range $key, $configInfo := $server }}
-{{- $serviceName := $configInfo.appName }}
-{{- $tag := or (index $.Values.tags (print $serviceName "-" $.Values.namespace )) $.Values.tag "latest" }}
-{{- include "spring-petclinic.deployment" (dict "root" $configInfo "namespace" $.Values.namespace "image" $.Values.image "profile" $.Values.profile "tag" $tag)}}
----
-{{- end }}
-{{- end }}
