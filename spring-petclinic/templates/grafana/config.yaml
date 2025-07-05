@@ -33,17 +33,22 @@ data:
         jsonData:
           derivedFields:
             - datasourceUid: "zipkin"
-              matcherRegex: "traceId[=:]\\s*([a-f0-9]{16,32})"
+              matcherRegex: "\\[[\\w-]+,([a-f0-9]{16,32}),[a-f0-9]{16,32}\\]"
               name: "TraceID"
               url: "$${__value.raw}"
               urlDisplayLabel: "View Trace in Zipkin"
             - datasourceUid: "zipkin"
-              matcherRegex: "\"traceId\":\\s*\"([a-f0-9]{16,32})\""
-              name: "Trace"
-              url: "$${__value.raw}"
-              urlDisplayLabel: "Open in Zipkin"
-            - datasourceUid: "prometheus"
               matcherRegex: "traceId[=:]\\s*([a-f0-9]{16,32})"
+              name: "TraceID-Legacy"
+              url: "$${__value.raw}"
+              urlDisplayLabel: "View Trace in Zipkin (Legacy)"
+            - datasourceUid: "zipkin"
+              matcherRegex: "\"traceId\":\\s*\"([a-f0-9]{16,32})\""
+              name: "Trace-JSON"
+              url: "$${__value.raw}"
+              urlDisplayLabel: "Open in Zipkin (JSON)"
+            - datasourceUid: "prometheus"
+              matcherRegex: "\\[[\\w-]+,([a-f0-9]{16,32}),[a-f0-9]{16,32}\\]"
               name: "Metrics"
               url: "$${__value.raw}"
               urlDisplayLabel: "View Metrics"
@@ -477,7 +482,7 @@ data:
           },
           "targets": [
             {
-              "expr": "{namespace=~\"$namespace\", app=~\".*-service|api-gateway\"} |~ \"traceId\"",
+              "expr": "{namespace=~\"$namespace\", app=~\".*-service|api-gateway\"} |~ \"\\\\[[\\\\w-]+,[a-f0-9]{16,32},[a-f0-9]{16,32}\\\\]|traceId\"",
               "refId": "A",
               "datasource": { "type": "loki", "uid": "loki" },
               "maxLines": 200

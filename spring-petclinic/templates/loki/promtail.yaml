@@ -96,12 +96,17 @@ data:
                 - {{ .Values.namespace }}
         pipeline_stages:
           - cri: {}
-          # Extract traceId and spanId from various log formats
+          # Extract traceId and spanId from Spring Boot Sleuth format: [service-name,traceId,spanId]
           - regex:
-              expression: '.*(?:traceId|trace[_-]?id)[=:\s]*([a-f0-9]{16,32}).*?(?:spanId|span[_-]?id)[=:\s]*([a-f0-9]{16,32})'
+              expression: '\[[\w-]+,(?P<traceId>[a-f0-9]{16,32}),(?P<spanId>[a-f0-9]{16,32})\]'
               source: content
+          # Backup pattern for legacy Sleuth format with export flag: [appname,traceId,spanId,export]
           - regex:
-              expression: '.*\[(?P<traceId>[a-f0-9]{16,32}),(?P<spanId>[a-f0-9]{16,32})\]'
+              expression: '\[[\w-]+,(?P<traceId>[a-f0-9]{16,32}),(?P<spanId>[a-f0-9]{16,32}),\w*\]'
+              source: content
+          # Extract from key-value format (fallback)
+          - regex:
+              expression: '.*(?:traceId|trace[_-]?id)[=:\s]*(?P<traceId>[a-f0-9]{16,32}).*?(?:spanId|span[_-]?id)[=:\s]*(?P<spanId>[a-f0-9]{16,32})'
               source: content
           # Also try JSON format
           - json:
@@ -114,10 +119,6 @@ data:
                 logger: logger
                 thread: thread
                 message: message
-          # Extract from Sleuth format: [appname,traceId,spanId,export]
-          - regex:
-              expression: '\[[\w-]+,(?P<traceId>[a-f0-9]{16,32}),(?P<spanId>[a-f0-9]{16,32}),\w*\]'
-              source: content
           # Set labels from extracted values
           - labels:
               traceId:
@@ -176,12 +177,17 @@ data:
               __path__: /var/log/containers/*{{ .Values.namespace }}*.log
         pipeline_stages:
           - cri: {}
-          # Enhanced regex for trace extraction
+          # Extract traceId and spanId from Spring Boot Sleuth format: [service-name,traceId,spanId]
           - regex:
-              expression: '.*(?:traceId|trace[_-]?id)[=:\s]*(?P<traceId>[a-f0-9]{16,32}).*?(?:spanId|span[_-]?id)[=:\s]*(?P<spanId>[a-f0-9]{16,32})'
+              expression: '\[[\w-]+,(?P<traceId>[a-f0-9]{16,32}),(?P<spanId>[a-f0-9]{16,32})\]'
               source: content
+          # Backup pattern for legacy Sleuth format with export flag: [appname,traceId,spanId,export]
           - regex:
               expression: '\[[\w-]+,(?P<traceId>[a-f0-9]{16,32}),(?P<spanId>[a-f0-9]{16,32}),\w*\]'
+              source: content
+          # Extract from key-value format (fallback)
+          - regex:
+              expression: '.*(?:traceId|trace[_-]?id)[=:\s]*(?P<traceId>[a-f0-9]{16,32}).*?(?:spanId|span[_-]?id)[=:\s]*(?P<spanId>[a-f0-9]{16,32})'
               source: content
           - json:
               expressions:
