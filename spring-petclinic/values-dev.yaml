@@ -18,5 +18,5 @@ tags:
   customers-service-dev: "20250705155301"
   genai-service-dev: "20250705155301"
   vets-service-dev: "20250705155301"
-  visits-service-dev: "20250705095724"
+  visits-service-dev: "6e64413b6ad1160104c40c69583249568f0c8599"
 lokiNamespace: dev
