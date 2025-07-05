@@ -18,7 +18,18 @@ spec:
     spec:
       containers:
         - name: {{ .root.containerName }}
-          image: {{ and (not (empty .image.repository)) (not (contains "/" .root.image.name)) | ternary (print .image.repository "/") "" }}{{ .root.image.name }}{{ and (not (empty .image.repository)) (not (contains "/" .root.image.name)) | ternary (print "-" .namespace) "" }}:{{ required "A tag must be provided" .tag }}
+          {{- $imageName := "" }}
+          {{- $envSuffix := "dev" }}
+          {{- if eq .namespace "staging" }}
+            {{- $envSuffix = "staging" }}
+          {{- end }}
+          {{- $serviceKey := print .root.appName "-" $envSuffix }}
+          {{- if and .image.names (index .image.names $serviceKey) }}
+            {{- $imageName = index .image.names $serviceKey }}
+          {{- else }}
+            {{- $imageName = printf "%s%s%s" (and (not (empty .image.repository)) (not (contains "/" .root.image.name)) | ternary (print .image.repository "/") "") .root.image.name (and (not (empty .image.repository)) (not (contains "/" .root.image.name)) | ternary (print "-" .namespace) "") }}
+          {{- end }}
+          image: {{ $imageName }}:{{ required "A tag must be provided" .tag }}
           ports:
             - containerPort: {{ .root.port }}
           env:

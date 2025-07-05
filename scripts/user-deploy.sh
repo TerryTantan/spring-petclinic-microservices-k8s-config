@@ -2,24 +2,70 @@
 
 # Check if at least namespace is provided
 if [ "$#" -lt 1 ]; then
-    echo "Usage: $0 namespace:{user_name} [service:{tag_value} ...]"
+    echo "Usage: $0 namespace:{user_name}"
+    echo "Note: "
+    echo "  - staging environment uses staging images from values-staging.yaml"
+    echo "  - all other users use dev images from values-dev.yaml"
     exit 1
 fi
 
 # Initialize variables with default values
 namespace=""
-config_server_tag="latest"
-discovery_server_tag="latest"
-tracing_server_tag="latest"
-admin_server_tag="latest"
-api_gateway_tag="latest"
-customers_service_tag="latest"
-genai_service_tag="latest"
-vets_service_tag="latest"
-visits_service_tag="latest"
 ingress_prefix="users"
 
-# Parse arguments
+# Function to extract tags based on environment
+get_tags_from_environment() {
+    local env_suffix
+    local values_file
+    
+    if [ "$namespace" = "staging" ]; then
+        env_suffix="staging"
+        values_file="./spring-petclinic/values-staging.yaml"
+        echo "Using staging environment images and tags"
+    else
+        env_suffix="dev"
+        values_file="./spring-petclinic/values-dev.yaml"
+        echo "Using dev environment images and tags"
+    fi
+    
+    if [ -f "$values_file" ]; then
+        config_server_tag=$(grep "config-server-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        discovery_server_tag=$(grep "discovery-server-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        admin_server_tag=$(grep "admin-server-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        api_gateway_tag=$(grep "api-gateway-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        customers_service_tag=$(grep "customers-service-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        genai_service_tag=$(grep "genai-service-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        vets_service_tag=$(grep "vets-service-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        visits_service_tag=$(grep "visits-service-${env_suffix}:" "$values_file" | sed 's/.*: *"\?\([^"]*\)"\?.*/\1/')
+        
+        # Set environment suffix for image names
+        image_env_suffix="$env_suffix"
+        
+        echo "Using tags from values-${env_suffix}.yaml:"
+        echo "- config-server-${env_suffix}: $config_server_tag"
+        echo "- discovery-server-${env_suffix}: $discovery_server_tag"
+        echo "- admin-server-${env_suffix}: $admin_server_tag"
+        echo "- api-gateway-${env_suffix}: $api_gateway_tag"
+        echo "- customers-service-${env_suffix}: $customers_service_tag"
+        echo "- genai-service-${env_suffix}: $genai_service_tag"
+        echo "- vets-service-${env_suffix}: $vets_service_tag"
+        echo "- visits-service-${env_suffix}: $visits_service_tag"
+    else
+        # Fallback to latest if values file not found
+        config_server_tag="latest"
+        discovery_server_tag="latest"
+        admin_server_tag="latest"
+        api_gateway_tag="latest"
+        customers_service_tag="latest"
+        genai_service_tag="latest"
+        vets_service_tag="latest"
+        visits_service_tag="latest"
+        image_env_suffix="dev"
+        echo "Warning: values-${env_suffix}.yaml not found, using 'latest' tags and dev images"
+    fi
+}
+
+# Parse arguments - only namespace is required now
 for arg in "$@"; do
     key=$(echo $arg | cut -d':' -f1)
     value=$(echo $arg | cut -d':' -f2)
@@ -28,35 +74,8 @@ for arg in "$@"; do
         "namespace")
             namespace=$value
             ;;
-        "config-server")
-            config_server_tag=$value
-            ;;
-        "discovery-server")
-            discovery_server_tag=$value
-            ;;
-        "tracing-server")
-            tracing_server_tag=$value
-            ;;
-        "admin-server")
-            admin_server_tag=$value
-            ;;
-        "api-gateway")
-            api_gateway_tag=$value
-            ;;
-        "customers-service")
-            customers_service_tag=$value
-            ;;
-        "genai-service")
-            genai_service_tag=$value
-            ;;
-        "vets-service")
-            vets_service_tag=$value
-            ;;
-        "visits-service")
-            visits_service_tag=$value
-            ;;
         *)
-            echo "Unknown parameter: $key"
+            echo "Note: Only namespace parameter is used. Tags will be pulled from dev environment."
             ;;
     esac
 done
@@ -64,23 +83,39 @@ done
 # Check if namespace was provided
 if [ -z "$namespace" ]; then
     echo "Error: namespace:{user_name} parameter is required"
+    echo "Usage: $0 namespace:{user_name}"
+    echo "Note: "
+    echo "  - staging environment uses staging images from values-staging.yaml"
+    echo "  - all other users use dev images from values-dev.yaml"
     exit 1
 fi
 
-# Create values file content
+# Get tags from appropriate environment
+get_tags_from_environment
+
+# Create values file content - using environment-specific images and tags
 values_content="namespace: $namespace
 image:
   repository: terrytantan
+  names:
+    config-server-${image_env_suffix}: terrytantan/spring-petclinic-config-server-${image_env_suffix}
+    discovery-server-${image_env_suffix}: terrytantan/spring-petclinic-discovery-server-${image_env_suffix}
+    admin-server-${image_env_suffix}: terrytantan/spring-petclinic-admin-server-${image_env_suffix}
+    api-gateway-${image_env_suffix}: terrytantan/spring-petclinic-api-gateway-${image_env_suffix}
+    customers-service-${image_env_suffix}: terrytantan/spring-petclinic-customers-service-${image_env_suffix}
+    genai-service-${image_env_suffix}: terrytantan/spring-petclinic-genai-service-${image_env_suffix}
+    vets-service-${image_env_suffix}: terrytantan/spring-petclinic-vets-service-${image_env_suffix}
+    visits-service-${image_env_suffix}: terrytantan/spring-petclinic-visits-service-${image_env_suffix}
 tags:
-  config-server: $config_server_tag
-  discovery-server: $discovery_server_tag
-  tracing-server: $tracing_server_tag
-  admin-server: $admin_server_tag
-  api-gateway: $api_gateway_tag
-  customers-service: $customers_service_tag
-  genai-service: $genai_service_tag
-  vets-service: $vets_service_tag
-  visits-service: $visits_service_tag
+  config-server-${image_env_suffix}: $config_server_tag
+  discovery-server-${image_env_suffix}: $discovery_server_tag
+  admin-server-${image_env_suffix}: $admin_server_tag
+  api-gateway-${image_env_suffix}: $api_gateway_tag
+  customers-service-${image_env_suffix}: $customers_service_tag
+  genai-service-${image_env_suffix}: $genai_service_tag
+  vets-service-${image_env_suffix}: $vets_service_tag
+  visits-service-${image_env_suffix}: $visits_service_tag
+lokiNamespace: $namespace
 ingressPrefix: $ingress_prefix"
 
 # Handle based on namespace
@@ -90,14 +125,15 @@ if [ "$namespace" = "dev" ] || [ "$namespace" = "staging" ]; then
     echo "Created values-$namespace.yaml in spring-petclinic directory"
     
     # Create commit message with service tags for dev/staging
-    commit_msg="Update values-$namespace.yaml with tags:"
-    for arg in "$@"; do
-        key=$(echo $arg | cut -d':' -f1)
-        value=$(echo $arg | cut -d':' -f2)
-        if [ "$key" != "namespace" ]; then
-            commit_msg="$commit_msg\n- $key: $value"
-        fi
-    done
+    commit_msg="Update values-$namespace.yaml with ${image_env_suffix} tags:
+- config-server-${image_env_suffix}: $config_server_tag
+- discovery-server-${image_env_suffix}: $discovery_server_tag
+- admin-server-${image_env_suffix}: $admin_server_tag
+- api-gateway-${image_env_suffix}: $api_gateway_tag
+- customers-service-${image_env_suffix}: $customers_service_tag
+- genai-service-${image_env_suffix}: $genai_service_tag
+- vets-service-${image_env_suffix}: $vets_service_tag
+- visits-service-${image_env_suffix}: $visits_service_tag"
 else
     # For other users, create full directory structure
     user_dir="users/$namespace"
@@ -114,14 +150,15 @@ else
     echo "Deployment files created successfully in $user_dir"
     
     # Create commit message for new user setup
-    commit_msg="Setup deployment for user $namespace with tags:"
-    for arg in "$@"; do
-        key=$(echo $arg | cut -d':' -f1)
-        value=$(echo $arg | cut -d':' -f2)
-        if [ "$key" != "namespace" ]; then
-            commit_msg="$commit_msg\n- $key: $value"
-        fi
-    done
+    commit_msg="Setup deployment for user $namespace using ${image_env_suffix} images with tags:
+- config-server-${image_env_suffix}: $config_server_tag
+- discovery-server-${image_env_suffix}: $discovery_server_tag
+- admin-server-${image_env_suffix}: $admin_server_tag
+- api-gateway-${image_env_suffix}: $api_gateway_tag
+- customers-service-${image_env_suffix}: $customers_service_tag
+- genai-service-${image_env_suffix}: $genai_service_tag
+- vets-service-${image_env_suffix}: $vets_service_tag
+- visits-service-${image_env_suffix}: $visits_service_tag"
 fi
 
 # Add changes to git

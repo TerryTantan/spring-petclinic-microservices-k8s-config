@@ -29,8 +29,11 @@ User deployment:
 user-deploy.sh
 ```bash
 chmod u+x ./scripts/user-deploy.sh
-./scripts/user-deploy.sh namespace:john config-server:v1.0 api-gateway:v2.0 customers-service:v1.5
+./scripts/user-deploy.sh namespace:john
 ```
+Note: 
+- Users (except staging) will use dev images with tags from values-dev.yaml
+- Staging environment will use staging images with tags from values-staging.yaml
 
 user-cleanup.sh
 ```bash
