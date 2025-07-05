@@ -11,12 +11,12 @@ image:
     vets-service-dev: terrytantan/spring-petclinic-vets-service-dev
     visits-service-dev: terrytantan/spring-petclinic-visits-service-dev
 tags:
-  config-server-dev: "20250705155301"
-  discovery-server-dev: "20250705155301"
+  config-server-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
+  discovery-server-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
   admin-server-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
-  api-gateway-dev: "20250705155301"
-  customers-service-dev: "ed557bf1885911ff062c657e33d1ce407dd2be13"
-  genai-service-dev: "20250705155301"
-  vets-service-dev: "2921e8d764118bf5490270a5523a21ceb2c8a0a4"
+  api-gateway-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
+  customers-service-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
+  genai-service-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
+  vets-service-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
   visits-service-dev: "6e64413b6ad1160104c40c69583249568f0c8599"
 lokiNamespace: dev
