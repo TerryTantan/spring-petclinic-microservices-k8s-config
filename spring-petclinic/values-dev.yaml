@@ -13,7 +13,7 @@ image:
 tags:
   config-server-dev: "20250705155301"
   discovery-server-dev: "20250705155301"
-  admin-server-dev: "20250705155301"
+  admin-server-dev: "13a5f441e678eb75a498d78e8012ccc6e267721b"
   api-gateway-dev: "20250705155301"
   customers-service-dev: "ed557bf1885911ff062c657e33d1ce407dd2be13"
   genai-service-dev: "20250705155301"
