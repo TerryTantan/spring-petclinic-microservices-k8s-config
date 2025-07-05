@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: {{ required "A namespace must be provided" .Values.namespace }}
+  labels:
+    app: alertmanager
+data:
+  alertmanager.yml: |
+    route:
+      group_by: ['severity']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 3h
+      receiver: discord-webhook
+  
+    receivers:
+      - name: 'discord-webhook'
+        webhook_configs:
+          - url: 'http://alertmanager-discord:9094'
